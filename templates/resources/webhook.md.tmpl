@@ -1,0 +1,22 @@
+---
+page_title: "lettermint_webhook Resource - lettermint"
+subcategory: ""
+description: |-
+  Manage a route-scoped Lettermint webhook.
+---
+
+# lettermint_webhook (Resource)
+
+Manage a route-scoped Lettermint webhook.
+
+## Example Usage
+
+{{ tffile "examples/resources/lettermint_webhook/resource.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+The API returns `secret` only when it creates the webhook. Store the value securely. An import cannot recover it.
+
+## Import
+
+{{ codefile "shell" "examples/resources/lettermint_webhook/import.sh" }}

@@ -1,0 +1,80 @@
+name: Verify Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: release
+
+    steps:
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@2dc316deee8e90f13e1a351ab510b4d5bc0c82cd # v7.0.0
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Download release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir release-assets
+
+      - name: Verify archives, checksums, signature, and manifest
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          checksums="release-assets/terraform-provider-lettermint_${version}_SHA256SUMS"
+          signature="${checksums}.sig"
+          manifest="release-assets/terraform-provider-lettermint_${version}_manifest.json"
+          test -f "$checksums"
+          test -f "$signature"
+          test -f "$manifest"
+          gpg --verify "$signature" "$checksums"
+          (cd release-assets && sha256sum --check "$(basename "$checksums")")
+          jq -e '.version == 1 and .metadata.protocol_versions == ["6.0"]' "$manifest"
+          find release-assets -name '*.zip' -type f -print -quit | grep -q .
+          for archive in release-assets/*.zip; do
+            unzip -Z1 "$archive" | grep -Eq "^terraform-provider-lettermint_v${version}(.exe)?$"
+          done
+
+      - name: Verify Registry installation and signature
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          mkdir registry-test
+          cat > registry-test/main.tf <<EOF
+          terraform {
+            required_version = ">= 1.14.0"
+            required_providers {
+              lettermint = {
+                source  = "lettermint/lettermint"
+                version = "= ${version}"
+              }
+            }
+          }
+          EOF
+          for attempt in $(seq 1 20); do
+            if terraform -chdir=registry-test init -backend=false; then
+              exit 0
+            fi
+            rm -rf registry-test/.terraform registry-test/.terraform.lock.hcl
+            sleep 15
+          done
+          exit 1

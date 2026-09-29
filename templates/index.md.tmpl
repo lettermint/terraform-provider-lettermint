@@ -1,0 +1,17 @@
+---
+page_title: "Provider: Lettermint"
+description: |-
+  Manage Lettermint projects, domains, routes, and route webhooks.
+---
+
+# Lettermint Provider
+
+Use the Lettermint provider to manage email infrastructure in one Lettermint team.
+
+Terraform 1.14 or later is required because this provider contains actions.
+
+Set `LETTERMINT_TEAM_TOKEN` or configure `team_token`.
+
+{{ tffile "examples/provider/provider.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}

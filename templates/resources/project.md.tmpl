@@ -1,0 +1,22 @@
+---
+page_title: "lettermint_project Resource - lettermint"
+subcategory: ""
+description: |-
+  Manage a Lettermint project.
+---
+
+# lettermint_project (Resource)
+
+Manage a Lettermint project.
+
+## Example Usage
+
+{{ tffile "examples/resources/lettermint_project/resource.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+The API returns `api_token` only when it creates the project. Store the value securely. An import cannot recover it.
+
+## Import
+
+{{ codefile "shell" "examples/resources/lettermint_project/import.sh" }}

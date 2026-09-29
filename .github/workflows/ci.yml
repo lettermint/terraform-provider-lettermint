@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: 1.14.0
+          terraform_wrapper: false
+
+      - name: Check Go formatting
+        shell: bash
+        run: test -z "$(gofmt -l .)"
+
+      - name: Check Terraform formatting
+        run: terraform fmt -check -recursive examples
+
+      - name: Run Go vet
+        run: go vet ./...
+
+      - name: Run race tests
+        run: go test -race -coverprofile=coverage.out ./...
+
+      - name: Run Terraform acceptance tests
+        env:
+          TF_ACC: '1'
+        run: go test -count=1 -run TestAccCurrentSDKSubset -v ./internal/provider
+
+      - name: Check module files
+        shell: bash
+        run: |
+          go mod tidy
+          git diff --exit-code -- go.mod go.sum
+
+      - name: Check generated documentation and contracts
+        shell: bash
+        run: |
+          go generate ./...
+          git diff --exit-code -- contracts/coverage.json docs
+
+      - name: Build provider
+        run: go build ./...
+
+      - name: Validate Terraform examples
+        shell: bash
+        run: |
+          mkdir -p "${RUNNER_TEMP}/lettermint-provider"
+          go build -o "${RUNNER_TEMP}/lettermint-provider/terraform-provider-lettermint" .
+          cat > "${RUNNER_TEMP}/terraform.rc" <<EOF
+          provider_installation {
+            dev_overrides {
+              "lettermint/lettermint" = "${RUNNER_TEMP}/lettermint-provider"
+            }
+            direct {}
+          }
+          EOF
+          TF_CLI_CONFIG_FILE="${RUNNER_TEMP}/terraform.rc" terraform -chdir=examples/provider validate
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v7
+        with:
+          file: coverage.out
+          fail_ci_if_error: false
+
+  snapshot:
+    name: GoReleaser snapshot
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Go
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Build snapshot
+        uses: goreleaser/goreleaser-action@f06c13b6b1a9625abc9e6e439d9c05a8f2190e94 # v7.2.3
+        with:
+          args: release --snapshot --clean --skip=sign
+
+      - name: Verify snapshot assets
+        shell: bash
+        run: |
+          version=$(jq -r .version dist/metadata.json)
+          binary="dist/terraform-provider-lettermint_linux_amd64_v1/terraform-provider-lettermint_v${version}"
+          checksums="dist/terraform-provider-lettermint_${version}_SHA256SUMS"
+          manifest="terraform-provider-lettermint_${version}_manifest.json"
+          test -f "$binary"
+          test -f "$checksums"
+          grep -Fq "  ${manifest}" "$checksums"
+          jq -e '.version == 1 and .metadata.protocol_versions == ["6.0"]' terraform-registry-manifest.json
+          unzip -Z1 "dist/terraform-provider-lettermint_${version}_linux_amd64.zip" | grep -Fxq "terraform-provider-lettermint_v${version}"

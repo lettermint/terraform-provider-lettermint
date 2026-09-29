@@ -1,0 +1,22 @@
+---
+page_title: "lettermint_domain Resource - lettermint"
+subcategory: ""
+description: |-
+  Manage a Lettermint sending domain.
+---
+
+# lettermint_domain (Resource)
+
+Manage a Lettermint sending domain.
+
+## Example Usage
+
+{{ tffile "examples/resources/lettermint_domain/resource.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
+
+## Import
+
+{{ codefile "shell" "examples/resources/lettermint_domain/import.sh" }}
+
+An imported domain cannot recover `dns_records`. The current SDK cannot request the optional DNS record relationship during a domain read.
