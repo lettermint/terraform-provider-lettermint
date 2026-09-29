@@ -4839,11 +4839,22 @@
               "string",
               "null"
             ]
+          },
+          "sandbox_result": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SandboxResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
           "email",
-          "name"
+          "name",
+          "sandbox_result"
         ],
         "title": "MessageRecipientData"
       },

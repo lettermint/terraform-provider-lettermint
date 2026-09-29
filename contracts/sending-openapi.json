@@ -83,26 +83,18 @@
                         "scheduled_at": {
                           "type": "string"
                         },
-                        "delivery_mode": {
-                          "$ref": "#/components/schemas/DeliveryMode"
+                        "sandbox": {
+                          "type": "boolean",
+                          "const": true
                         },
                         "sandbox_result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/SandboxResult"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
+                          "$ref": "#/components/schemas/SandboxResult"
                         }
                       },
                       "required": [
                         "message_id",
                         "status",
-                        "scheduled_at",
-                        "delivery_mode",
-                        "sandbox_result"
+                        "scheduled_at"
                       ]
                     },
                     {
@@ -117,25 +109,17 @@
                         "status": {
                           "$ref": "#/components/schemas/MessageStatus"
                         },
-                        "delivery_mode": {
-                          "$ref": "#/components/schemas/DeliveryMode"
+                        "sandbox": {
+                          "type": "boolean",
+                          "const": true
                         },
                         "sandbox_result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/SandboxResult"
-                            },
-                            {
-                              "type": "null"
-                            }
-                          ]
+                          "$ref": "#/components/schemas/SandboxResult"
                         }
                       },
                       "required": [
                         "message_id",
-                        "status",
-                        "delivery_mode",
-                        "sandbox_result"
+                        "status"
                       ]
                     }
                   ]
@@ -214,25 +198,17 @@
                       "scheduled_at": {
                         "type": "string"
                       },
-                      "delivery_mode": {
-                        "$ref": "#/components/schemas/DeliveryMode"
+                      "sandbox": {
+                        "type": "boolean",
+                        "const": true
                       },
                       "sandbox_result": {
-                        "anyOf": [
-                          {
-                            "$ref": "#/components/schemas/SandboxResult"
-                          },
-                          {
-                            "type": "null"
-                          }
-                        ]
+                        "$ref": "#/components/schemas/SandboxResult"
                       }
                     },
                     "required": [
                       "message_id",
-                      "status",
-                      "delivery_mode",
-                      "sandbox_result"
+                      "status"
                     ]
                   }
                 }
@@ -757,14 +733,6 @@
           "enforced"
         ],
         "title": "TlsPolicy"
-      },
-      "DeliveryMode": {
-        "type": "string",
-        "enum": [
-          "live",
-          "sandbox"
-        ],
-        "title": "DeliveryMode"
       },
       "SandboxResult": {
         "type": "string",
