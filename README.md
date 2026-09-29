@@ -123,6 +123,14 @@ The checked OpenAPI files are immutable snapshots. Update the snapshots, hashes,
 
 See [CHANGELOG.md](CHANGELOG.md) for release changes.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution instructions.
+
+## Security
+
+See [SECURITY.md](SECURITY.md) to report a security issue privately.
+
 ## Support
 
 For help, join the [Lettermint Discord server](https://lettermint.co/r/discord).
