@@ -5,15 +5,21 @@
     {
       "id": "sending",
       "file": "sending-openapi.json",
-      "sha256": "44b8a8a97a6ad969f48186a2081e2f22b5e49449b7ae813dbac3da5e54ebfea4"
+      "sha256": "c2aafb6d48a2572e688224629076748322f9c257394f18fe8879efb3f05059cb"
     },
     {
       "id": "team",
       "file": "team-openapi.json",
-      "sha256": "46d14a3fa7ce028ea16265791fc4bff72fd89fe6ccdb368f7b5400ecd78bd5ed"
+      "sha256": "d5525f1ce1865a3f8aee979f296c535d0029791450d89794731e70f7125b199c"
     }
   ],
   "operation_statuses": {
+    "team#v1.analytics": "intentionally-excluded",
+    "team#getReportForwarding": "intentionally-excluded",
+    "team#updateReportForwarding": "intentionally-excluded",
+    "team#deleteReportForwarding": "intentionally-excluded",
+    "team#verifyReportForwarding": "intentionally-excluded",
+    "team#resendReportForwardingCode": "intentionally-excluded",
     "sending#v1.ping": "intentionally-excluded",
     "sending#v1.sendBatchMail": "intentionally-excluded",
     "sending#v1.sendMail": "intentionally-excluded",
@@ -69,6 +75,17 @@
     "team#webhook.update": "implemented"
   },
   "field_status_overrides": {
+    "team#/components/schemas/ProjectListData/properties/delivery_mode": "sdk-blocked",
+    "team#/components/schemas/StoreProjectData/properties/redact_email_content": "sdk-blocked",
+    "team#/components/schemas/StoreRouteData/properties/attachment_delivery": "sdk-blocked",
+    "team#/components/schemas/StoreRouteData/properties/inbound_domain": "sdk-blocked",
+    "team#/components/schemas/StoreRouteData/properties/inbound_settings": "sdk-blocked",
+    "team#/components/schemas/StoreRouteData/properties/inbound_spam_threshold": "sdk-blocked",
+    "team#/components/schemas/StoreRouteData/properties/settings": "sdk-blocked",
+    "team#/components/schemas/UpdateRouteData/properties/attachment_delivery": "sdk-blocked",
+    "team#/components/schemas/UpdateRouteData/properties/inbound_domain": "sdk-blocked",
+    "team#/components/schemas/UpdateRouteData/properties/inbound_spam_threshold": "sdk-blocked",
+    "team#/components/schemas/WebhookListData/properties/delivery_mode_filter": "sdk-blocked",
     "team#/components/schemas/DomainData/properties/created_at": "implemented",
     "team#/components/schemas/DomainData/properties/dkim_mode": "implemented",
     "team#/components/schemas/DomainData/properties/dns_records": "implemented",
@@ -246,7 +263,7 @@
     "team#/paths/~1domains~1{domainId}~1dns-records~1verify/post/responses/200/content/application~1json/schema/properties/message": "implemented",
     "team#/paths/~1domains~1{domainId}~1dns-records~1verify/post/responses/200/content/application~1json/schema/properties/recommended_failed_records": "implemented",
     "team#/paths/~1domains~1{domainId}~1dns-records~1{recordId}~1verify/post/responses/200/content/application~1json/schema/properties/message": "implemented",
-    "team#/paths/~1projects/post/responses/201/content/application~1json/schema/properties/api_token": "implemented",
+    "team#/components/schemas/ProjectCreatedData/properties/api_token": "implemented",
     "team#/paths/~1routes~1{routeId}~1verify-inbound-domain/post/responses/200/content/application~1json/schema/properties/data": "implemented",
     "team#/paths/~1routes~1{routeId}~1verify-inbound-domain/post/responses/200/content/application~1json/schema/properties/data/properties/message": "implemented",
     "team#operation/domain.index/parameter/query/filter[domain]": "implemented",
