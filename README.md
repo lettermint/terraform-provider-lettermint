@@ -115,7 +115,7 @@ go vet ./...
 goreleaser release --snapshot --clean --skip=sign
 ```
 
-The checked OpenAPI files are immutable snapshots. Update the snapshots, hashes, and coverage policy together. Do not edit an OpenAPI snapshot to make a provider test pass.
+Source OpenAPI specifications stay in the API repository. Do not copy them into this repository. The coverage report stores only source names, hashes, and classifications. See [CONTRIBUTING.md](CONTRIBUTING.md) for external contract checks.
 
 </details>
 
