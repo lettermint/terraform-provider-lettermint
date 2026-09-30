@@ -6,3 +6,6 @@ crash.log
 crash.*.log
 dist/
 terraform-provider-lettermint
+*-openapi.json
+*-openapi.yaml
+*-openapi.yml

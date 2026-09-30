@@ -1,16 +1,16 @@
 {
   "version": 1,
   "default_field_status": "intentionally-excluded",
-  "snapshots": [
+  "specifications": [
     {
       "id": "sending",
-      "file": "contracts/sending-openapi.json",
-      "sha256": "65da4ea3102d2cefafd2dbddd41e735c57a6fa62a541dc241330fc4a13286d6d"
+      "file": "sending-openapi.json",
+      "sha256": "44b8a8a97a6ad969f48186a2081e2f22b5e49449b7ae813dbac3da5e54ebfea4"
     },
     {
       "id": "team",
-      "file": "contracts/team-openapi.json",
-      "sha256": "6b256c4c1cedc7094d3a80ff36da1e7ea801540923baa5b2e5618d62b6b92e43"
+      "file": "team-openapi.json",
+      "sha256": "46d14a3fa7ce028ea16265791fc4bff72fd89fe6ccdb368f7b5400ecd78bd5ed"
     }
   ],
   "operation_statuses": {

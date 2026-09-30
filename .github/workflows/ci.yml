@@ -63,11 +63,11 @@ jobs:
           go mod tidy
           git diff --exit-code -- go.mod go.sum
 
-      - name: Check generated documentation and contracts
+      - name: Check generated documentation
         shell: bash
         run: |
           go generate ./...
-          git diff --exit-code -- contracts/coverage.json docs
+          git diff --exit-code -- docs
 
       - name: Build provider
         run: go build ./...

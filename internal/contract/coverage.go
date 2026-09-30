@@ -14,7 +14,7 @@ import (
 const PolicyPath = "contracts/coverage-policy.json"
 const CoveragePath = "contracts/coverage.json"
 
-type SnapshotPolicy struct {
+type Specification struct {
 	ID     string `json:"id"`
 	File   string `json:"file"`
 	SHA256 string `json:"sha256"`
@@ -23,15 +23,9 @@ type SnapshotPolicy struct {
 type Policy struct {
 	Version              int               `json:"version"`
 	DefaultFieldStatus   string            `json:"default_field_status"`
-	Snapshots            []SnapshotPolicy  `json:"snapshots"`
+	Specifications       []Specification   `json:"specifications"`
 	OperationStatuses    map[string]string `json:"operation_statuses"`
 	FieldStatusOverrides map[string]string `json:"field_status_overrides"`
-}
-
-type Snapshot struct {
-	ID     string `json:"id"`
-	File   string `json:"file"`
-	SHA256 string `json:"sha256"`
 }
 
 type Operation struct {
@@ -49,13 +43,16 @@ type Field struct {
 }
 
 type Coverage struct {
-	Version    int         `json:"version"`
-	Snapshots  []Snapshot  `json:"snapshots"`
-	Operations []Operation `json:"operations"`
-	Fields     []Field     `json:"fields"`
+	Version        int             `json:"version"`
+	Specifications []Specification `json:"specifications"`
+	Operations     []Operation     `json:"operations"`
+	Fields         []Field         `json:"fields"`
 }
 
-func Generate(root string) (Coverage, error) {
+func Generate(root, specDir string) (Coverage, error) {
+	if specDir == "" {
+		return Coverage{}, fmt.Errorf("an external specification directory is required")
+	}
 	policyBytes, err := os.ReadFile(filepath.Join(root, PolicyPath))
 	if err != nil {
 		return Coverage{}, err
@@ -71,42 +68,45 @@ func Generate(root string) (Coverage, error) {
 	coverage := Coverage{Version: policy.Version}
 	usedOperations := map[string]bool{}
 	usedFields := map[string]bool{}
-	for _, snapshotPolicy := range policy.Snapshots {
-		documentBytes, err := os.ReadFile(filepath.Join(root, snapshotPolicy.File))
+	for _, specification := range policy.Specifications {
+		if filepath.Base(specification.File) != specification.File {
+			return Coverage{}, fmt.Errorf("specification file must be a basename: %s", specification.File)
+		}
+		documentBytes, err := os.ReadFile(filepath.Join(specDir, specification.File))
 		if err != nil {
 			return Coverage{}, err
 		}
 		hash := sha256.Sum256(documentBytes)
 		actualHash := hex.EncodeToString(hash[:])
-		if actualHash != snapshotPolicy.SHA256 {
-			return Coverage{}, fmt.Errorf("%s hash is %s, want %s", snapshotPolicy.File, actualHash, snapshotPolicy.SHA256)
+		if actualHash != specification.SHA256 {
+			return Coverage{}, fmt.Errorf("%s hash is %s, want %s; review the API contract before updating its hash", specification.File, actualHash, specification.SHA256)
 		}
-		coverage.Snapshots = append(coverage.Snapshots, Snapshot(snapshotPolicy))
+		coverage.Specifications = append(coverage.Specifications, specification)
 
 		var document map[string]any
 		if err := json.Unmarshal(documentBytes, &document); err != nil {
-			return Coverage{}, fmt.Errorf("decode %s: %w", snapshotPolicy.File, err)
+			return Coverage{}, fmt.Errorf("decode %s: %w", specification.File, err)
 		}
-		operations, operationIDs, err := collectOperations(snapshotPolicy.ID, document, policy.OperationStatuses, usedOperations)
+		operations, operationIDs, err := collectOperations(specification.ID, document, policy.OperationStatuses, usedOperations)
 		if err != nil {
 			return Coverage{}, err
 		}
 		coverage.Operations = append(coverage.Operations, operations...)
-		coverage.Fields = append(coverage.Fields, collectFields(snapshotPolicy.ID, document, operationIDs, policy, usedFields)...)
+		coverage.Fields = append(coverage.Fields, collectFields(specification.ID, document, operationIDs, policy, usedFields)...)
 	}
 
 	for key := range policy.OperationStatuses {
 		if !usedOperations[key] {
-			return Coverage{}, fmt.Errorf("operation policy %q does not match a snapshot operation", key)
+			return Coverage{}, fmt.Errorf("operation policy %q does not match a specification operation", key)
 		}
 	}
 	for key := range policy.FieldStatusOverrides {
 		if !usedFields[key] {
-			return Coverage{}, fmt.Errorf("field policy %q does not match a snapshot field", key)
+			return Coverage{}, fmt.Errorf("field policy %q does not match a specification field", key)
 		}
 	}
 
-	sort.Slice(coverage.Snapshots, func(i, j int) bool { return coverage.Snapshots[i].ID < coverage.Snapshots[j].ID })
+	sort.Slice(coverage.Specifications, func(i, j int) bool { return coverage.Specifications[i].ID < coverage.Specifications[j].ID })
 	sort.Slice(coverage.Operations, func(i, j int) bool { return coverage.Operations[i].Key < coverage.Operations[j].Key })
 	sort.Slice(coverage.Fields, func(i, j int) bool { return coverage.Fields[i].Key < coverage.Fields[j].Key })
 	return coverage, nil
