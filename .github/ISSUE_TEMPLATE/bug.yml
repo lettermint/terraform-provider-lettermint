@@ -1,0 +1,83 @@
+name: Bug report
+description: Report a defect in the Lettermint Terraform provider
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. Remove tokens, secrets, and other sensitive data before you submit this form.
+
+  - type: input
+    id: provider-version
+    attributes:
+      label: Provider version
+      description: Enter the Lettermint provider version.
+      placeholder: 0.1.0
+    validations:
+      required: true
+
+  - type: input
+    id: terraform-version
+    attributes:
+      label: Terraform version
+      description: Enter the Terraform version.
+      placeholder: 1.14.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating system
+      multiple: true
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Terraform configuration
+      description: Add the smallest configuration that shows the problem. Remove all sensitive values.
+      render: terraform
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: State what you expected Terraform to do.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: State what Terraform did.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: List the commands and steps that reproduce the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Add relevant Terraform output. Remove tokens, secrets, and other sensitive data.
+      render: shell
+    validations:
+      required: false

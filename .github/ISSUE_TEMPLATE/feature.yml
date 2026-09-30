@@ -1,0 +1,43 @@
+name: Feature request
+description: Propose a change to the Lettermint Terraform provider
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The provider can expose only behavior that the Lettermint OpenAPI specification and the pinned Go SDK support.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: Explain the problem that you want to solve.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed configuration
+      description: Show the Terraform configuration that you want to use.
+      render: terraform
+    validations:
+      required: true
+
+  - type: textarea
+    id: api-support
+    attributes:
+      label: Lettermint API support
+      description: Link to the applicable Lettermint API documentation or OpenAPI operation, if known.
+    validations:
+      required: false
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Describe any alternatives that you considered.
+    validations:
+      required: false
