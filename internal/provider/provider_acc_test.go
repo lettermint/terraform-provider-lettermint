@@ -168,7 +168,7 @@ func (a *acceptanceAPI) RoundTrip(request *http.Request) (*http.Response, error)
 		a.webhook = map[string]any{
 			"id": testWebhookID, "scope": "route", "project_ids": []any{}, "route_ids": []any{testRouteID}, "route_id": body["route_id"],
 			"name": body["name"], "url": body["url"], "events": body["events"], "enabled": body["enabled"],
-			"include_machine_events": body["include_machine_events"], "secret": "whsec_test", "last_called_at": nil,
+			"include_machine_events": body["include_machine_events"], "secret": "whsec_test", "last_called_at": nil, "has_basic_auth": false,
 			"created_at": "2026-09-29T00:00:00Z", "updated_at": "2026-09-29T00:00:00Z", "delivery_mode_filter": "all",
 		}
 		return apiResponse(request, http.StatusCreated, map[string]any{"data": a.webhook, "message": "Webhook created successfully."})

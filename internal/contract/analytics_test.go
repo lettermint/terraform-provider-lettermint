@@ -33,8 +33,8 @@ func TestAnalyticsAndForwardingHaveExplicitCoverage(t *testing.T) {
 		fields[field.Key] = field.Status
 	}
 	for _, field := range []string{"ProjectListData/properties/delivery_mode", "StoreProjectData/properties/redact_email_content", "StoreRouteData/properties/settings", "UpdateRouteData/properties/inbound_domain", "WebhookListData/properties/delivery_mode_filter"} {
-		if fields["team#/components/schemas/"+field] != "sdk-blocked" {
-			t.Errorf("missing published SDK limit for %s", field)
+		if fields["team#/components/schemas/"+field] != "intentionally-excluded" {
+			t.Errorf("missing provider scope decision for %s", field)
 		}
 	}
 	if fields["team#/components/schemas/ProjectCreatedData/properties/api_token"] != "implemented" {

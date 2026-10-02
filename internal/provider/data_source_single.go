@@ -56,6 +56,7 @@ type webhookDataSourceModel struct {
 	Events               types.List   `tfsdk:"events"`
 	Enabled              types.Bool   `tfsdk:"enabled"`
 	IncludeMachineEvents types.Bool   `tfsdk:"include_machine_events"`
+	HasBasicAuth         types.Bool   `tfsdk:"has_basic_auth"`
 	LastCalledAt         types.String `tfsdk:"last_called_at"`
 	CreatedAt            types.String `tfsdk:"created_at"`
 	UpdatedAt            types.String `tfsdk:"updated_at"`
@@ -206,6 +207,7 @@ func (d *webhookDataSource) Schema(_ context.Context, _ datasource.SchemaRequest
 	resp.Schema = schema.Schema{Description: "Read one route-scoped Lettermint webhook.", Attributes: map[string]schema.Attribute{
 		"id": schema.StringAttribute{Required: true}, "route_id": schema.StringAttribute{Computed: true}, "name": schema.StringAttribute{Computed: true}, "url": schema.StringAttribute{Computed: true},
 		"events": schema.ListAttribute{Computed: true, ElementType: types.StringType}, "enabled": schema.BoolAttribute{Computed: true}, "include_machine_events": schema.BoolAttribute{Computed: true},
+		"has_basic_auth": schema.BoolAttribute{Computed: true, Description: "Whether the webhook has Basic Auth credentials. The API does not return the credentials."},
 		"last_called_at": schema.StringAttribute{Computed: true}, "created_at": schema.StringAttribute{Computed: true}, "updated_at": schema.StringAttribute{Computed: true},
 	}}
 }
@@ -221,8 +223,8 @@ func (d *webhookDataSource) Read(ctx context.Context, req datasource.ReadRequest
 		return
 	}
 	webhook := lettermint.WebhookData(result)
-	if webhook.RouteID == "" {
-		resp.Diagnostics.AddError("Unsupported webhook scope", "The current lettermint-go version supports route-scoped webhooks only.")
+	if webhook.RouteID == nil || *webhook.RouteID == "" {
+		resp.Diagnostics.AddError("Unsupported webhook scope", "This data source reads route-scoped webhooks only.")
 		return
 	}
 	state := webhookDataSourceModelFromAPI(webhook)
