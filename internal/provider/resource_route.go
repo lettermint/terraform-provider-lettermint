@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 var (
@@ -103,10 +103,10 @@ func (r *routeResource) Create(ctx context.Context, req resource.CreateRequest, 
 		return
 	}
 
-	created, err := r.client.API.Projects.CreateRoute(ctx, plan.ProjectID.ValueString(), lettermint.RouteStoreRequest{
+	created, err := r.client.Routes.Create(ctx, plan.ProjectID.ValueString(), lettermint.StoreRouteData{
 		Name:      plan.Name.ValueString(),
 		RouteType: lettermint.RouteType(plan.RouteType.ValueString()),
-		Slug:      stringPointer(plan.Slug),
+		Slug:      knownString(plan.Slug),
 	})
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot create route", err)
@@ -115,8 +115,8 @@ func (r *routeResource) Create(ctx context.Context, req resource.CreateRequest, 
 
 	remote := created.Data
 	update := routeUpdateRequest(plan)
-	if update.Settings != nil || update.InboundSettings != nil {
-		updated, updateErr := r.client.API.Routes.Update(ctx, remote.ID, lettermint.RouteUpdateRequest(update))
+	if update.Settings.IsSet() || update.InboundSettings.IsSet() {
+		updated, updateErr := r.client.Routes.Update(ctx, remote.ID, update)
 		if updateErr != nil {
 			appendClientDiagnostic(&resp.Diagnostics, "Route was created, but its settings could not be updated", updateErr)
 			return
@@ -134,7 +134,7 @@ func (r *routeResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := r.client.API.Routes.Retrieve(ctx, state.ID.ValueString())
+	result, err := r.client.Routes.Retrieve(ctx, state.ID.ValueString(), nil)
 	if isNotFound(err) {
 		resp.State.RemoveResource(ctx)
 		return
@@ -143,7 +143,7 @@ func (r *routeResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read route", err)
 		return
 	}
-	state = routeModelFromAPI(lettermint.RouteData(result))
+	state = routeModelFromAPI(*result)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -156,8 +156,8 @@ func (r *routeResource) Update(ctx context.Context, req resource.UpdateRequest, 
 		return
 	}
 	update := routeUpdateRequest(plan)
-	update.Name = stringPointer(plan.Name)
-	result, err := r.client.API.Routes.Update(ctx, state.ID.ValueString(), lettermint.RouteUpdateRequest(update))
+	update.Name = knownString(plan.Name)
+	result, err := r.client.Routes.Update(ctx, state.ID.ValueString(), update)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot update route", err)
 		return
@@ -172,7 +172,7 @@ func (r *routeResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	_, err := r.client.API.Routes.Delete(ctx, state.ID.ValueString())
+	_, err := r.client.Routes.Delete(ctx, state.ID.ValueString())
 	if err != nil && !isNotFound(err) {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot delete route", err)
 	}
@@ -182,37 +182,36 @@ func (r *routeResource) ImportState(ctx context.Context, req resource.ImportStat
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
+// routeUpdateRequest maps the planned route settings to an update request.
+// Known values are sent. Null or unknown values are absent, so the API keeps
+// them. A settings object without a known value is absent too.
 func routeUpdateRequest(model routeResourceModel) lettermint.UpdateRouteData {
-	settings := &lettermint.UpdateRouteSettingsData{
-		TrackOpens:                   boolPointer(model.TrackOpens),
-		TrackClicks:                  boolPointer(model.TrackClicks),
-		GeneratePlaintextFallback:    boolPointer(model.GeneratePlaintextFallback),
-		SuppressAutoResponders:       boolPointer(model.SuppressAutoResponders),
-		SuppressDisposableRecipients: boolPointer(model.SuppressDisposableRecipients),
-		DisableHostedUnsubscribe:     boolPointer(model.DisableHostedUnsubscribe),
-		RedactEmailContent:           boolPointer(model.RedactEmailContent),
+	var request lettermint.UpdateRouteData
+
+	settings := lettermint.UpdateRouteSettingsData{
+		TrackOpens:                   knownBool(model.TrackOpens),
+		TrackClicks:                  knownBool(model.TrackClicks),
+		GeneratePlaintextFallback:    knownBool(model.GeneratePlaintextFallback),
+		SuppressAutoResponders:       knownBool(model.SuppressAutoResponders),
+		SuppressDisposableRecipients: knownBool(model.SuppressDisposableRecipients),
+		TLS:                          knownEnum[lettermint.TlsPolicy](model.TLS),
+		DisableHostedUnsubscribe:     knownBool(model.DisableHostedUnsubscribe),
+		RedactEmailContent:           knownBool(model.RedactEmailContent),
 	}
-	if !model.TLS.IsNull() && !model.TLS.IsUnknown() {
-		value := lettermint.TlsPolicy(model.TLS.ValueString())
-		settings.Tls = &value
-	}
-	if settings.TrackOpens == nil && settings.TrackClicks == nil && settings.GeneratePlaintextFallback == nil && settings.SuppressAutoResponders == nil && settings.SuppressDisposableRecipients == nil && settings.Tls == nil && settings.DisableHostedUnsubscribe == nil && settings.RedactEmailContent == nil {
-		settings = nil
+	if settings.TrackOpens.IsSet() || settings.TrackClicks.IsSet() || settings.GeneratePlaintextFallback.IsSet() || settings.SuppressAutoResponders.IsSet() || settings.SuppressDisposableRecipients.IsSet() || settings.TLS.IsSet() || settings.DisableHostedUnsubscribe.IsSet() || settings.RedactEmailContent.IsSet() {
+		request.Settings = lettermint.Value(settings)
 	}
 
-	inbound := &lettermint.UpdateRouteInboundSettingsData{
-		InboundDomain:        stringPointer(model.InboundDomain),
-		InboundSpamThreshold: floatPointer(model.InboundSpamThreshold),
+	inbound := lettermint.UpdateRouteInboundSettingsData{
+		InboundDomain:        knownString(model.InboundDomain),
+		InboundSpamThreshold: knownFloat64(model.InboundSpamThreshold),
+		AttachmentDelivery:   knownEnum[lettermint.AttachmentDelivery](model.AttachmentDelivery),
 	}
-	if !model.AttachmentDelivery.IsNull() && !model.AttachmentDelivery.IsUnknown() {
-		value := lettermint.AttachmentDelivery(model.AttachmentDelivery.ValueString())
-		inbound.AttachmentDelivery = &value
-	}
-	if inbound.InboundDomain == nil && inbound.InboundSpamThreshold == nil && inbound.AttachmentDelivery == nil {
-		inbound = nil
+	if inbound.InboundDomain.IsSet() || inbound.InboundSpamThreshold.IsSet() || inbound.AttachmentDelivery.IsSet() {
+		request.InboundSettings = lettermint.Value(inbound)
 	}
 
-	return lettermint.UpdateRouteData{Settings: settings, InboundSettings: inbound}
+	return request
 }
 
 func routeModelFromAPI(route lettermint.RouteData) routeResourceModel {
@@ -223,45 +222,30 @@ func routeModelFromAPI(route lettermint.RouteData) routeResourceModel {
 		Name:                    stringValue(route.Name),
 		RouteType:               stringValue(string(route.RouteType)),
 		IsDefault:               types.BoolValue(route.IsDefault),
-		InboundAddress:          nullableString(route.InboundAddress),
-		InboundDomain:           nullableString(route.InboundDomain),
-		InboundDomainVerifiedAt: nullableString(route.InboundDomainVerifiedAt),
+		InboundAddress:          optionalString(route.InboundAddress),
+		InboundDomain:           optionalString(route.InboundDomain),
+		InboundDomainVerifiedAt: optionalString(route.InboundDomainVerifiedAt),
+		InboundSpamThreshold:    optionalFloat64(route.InboundSpamThreshold),
 		CreatedAt:               stringValue(route.CreatedAt),
 		UpdatedAt:               stringValue(route.UpdatedAt),
 	}
-	if route.InboundSpamThreshold == nil {
-		model.InboundSpamThreshold = types.Float64Null()
-	} else {
-		model.InboundSpamThreshold = types.Float64Value(*route.InboundSpamThreshold)
-	}
-	if route.AttachmentDelivery == "" {
+	if route.AttachmentDelivery == nil || *route.AttachmentDelivery == "" {
 		model.AttachmentDelivery = types.StringNull()
 	} else {
-		model.AttachmentDelivery = stringValue(string(route.AttachmentDelivery))
+		model.AttachmentDelivery = stringValue(string(*route.AttachmentDelivery))
 	}
-	model.TrackOpens = mapBool(route.Settings, "track_opens")
-	model.TrackClicks = mapBool(route.Settings, "track_clicks")
-	model.GeneratePlaintextFallback = mapBool(route.Settings, "generate_plaintext_fallback")
-	model.SuppressAutoResponders = mapBool(route.Settings, "suppress_auto_responders")
-	model.SuppressDisposableRecipients = mapBool(route.Settings, "suppress_disposable_recipients")
-	model.DisableHostedUnsubscribe = mapBool(route.Settings, "disable_hosted_unsubscribe")
-	model.RedactEmailContent = mapBool(route.Settings, "redact_email_content")
-	model.TLS = mapString(route.Settings, "tls")
+	settings, _ := route.Settings.Get()
+	model.TrackOpens = optionalBool(settings.TrackOpens)
+	model.TrackClicks = optionalBool(settings.TrackClicks)
+	model.GeneratePlaintextFallback = optionalBool(settings.GeneratePlaintextFallback)
+	model.SuppressAutoResponders = optionalBool(settings.SuppressAutoResponders)
+	model.SuppressDisposableRecipients = optionalBool(settings.SuppressDisposableRecipients)
+	model.DisableHostedUnsubscribe = optionalBool(settings.DisableHostedUnsubscribe)
+	model.RedactEmailContent = optionalBool(settings.RedactEmailContent)
+	if settings.TLS == nil {
+		model.TLS = types.StringNull()
+	} else {
+		model.TLS = stringValue(string(*settings.TLS))
+	}
 	return model
-}
-
-func mapBool(values map[string]interface{}, key string) types.Bool {
-	value, ok := values[key].(bool)
-	if !ok {
-		return types.BoolNull()
-	}
-	return types.BoolValue(value)
-}
-
-func mapString(values map[string]interface{}, key string) types.String {
-	value, ok := values[key].(string)
-	if !ok {
-		return types.StringNull()
-	}
-	return types.StringValue(value)
 }

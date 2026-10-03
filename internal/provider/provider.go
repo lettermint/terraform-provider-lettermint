@@ -11,7 +11,7 @@ import (
 	providerschema "github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 const typeName = "lettermint"
@@ -23,7 +23,7 @@ var (
 
 type lettermintProvider struct {
 	version       string
-	clientFactory func(string) (*lettermint.APIClient, error)
+	clientFactory func(string) (*lettermint.Client, error)
 }
 
 type providerModel struct {
@@ -31,18 +31,21 @@ type providerModel struct {
 }
 
 type clientData struct {
-	API *lettermint.APIClient
+	*lettermint.Client
 }
 
 func New(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &lettermintProvider{
-			version: version,
-			clientFactory: func(token string) (*lettermint.APIClient, error) {
-				return lettermint.NewAPI(token)
-			},
+			version:       version,
+			clientFactory: newClient,
 		}
 	}
+}
+
+// newClient creates a Lettermint client that uses the team token for the Team API.
+func newClient(token string) (*lettermint.Client, error) {
+	return lettermint.New(lettermint.WithTeamToken(token))
 }
 
 func (p *lettermintProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -84,17 +87,15 @@ func (p *lettermintProvider) Configure(ctx context.Context, req provider.Configu
 
 	clientFactory := p.clientFactory
 	if clientFactory == nil {
-		clientFactory = func(token string) (*lettermint.APIClient, error) {
-			return lettermint.NewAPI(token)
-		}
+		clientFactory = newClient
 	}
-	api, err := clientFactory(token)
+	client, err := clientFactory(token)
 	if err != nil {
 		resp.Diagnostics.AddError("Cannot create Lettermint client", err.Error())
 		return
 	}
 
-	data := &clientData{API: api}
+	data := &clientData{Client: client}
 	resp.ResourceData = data
 	resp.DataSourceData = data
 	resp.ActionData = data

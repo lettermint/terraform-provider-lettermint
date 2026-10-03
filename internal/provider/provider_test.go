@@ -75,9 +75,9 @@ func TestProviderSurfaceIsCurrentSDKSubset(t *testing.T) {
 
 	var teamDataSourceSchema datasource.SchemaResponse
 	(&teamDataSource{}).Schema(context.Background(), datasource.SchemaRequest{}, &teamDataSourceSchema)
-	for _, sdkBlocked := range []string{"domains_count", "projects_count", "members_count"} {
-		if _, ok := teamDataSourceSchema.Schema.Attributes[sdkBlocked]; ok {
-			t.Errorf("team field %q must not be exposed because the SDK loses optional presence", sdkBlocked)
+	for _, excluded := range []string{"domains_count", "projects_count", "members_count"} {
+		if _, ok := teamDataSourceSchema.Schema.Attributes[excluded]; ok {
+			t.Errorf("team field %q must not be exposed", excluded)
 		}
 	}
 }

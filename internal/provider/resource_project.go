@@ -14,7 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 var (
@@ -116,10 +116,10 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	result, err := r.client.API.Projects.Create(ctx, lettermint.ProjectStoreRequest{
+	result, err := r.client.Projects.Create(ctx, lettermint.StoreProjectData{
 		Name:          plan.Name.ValueString(),
 		SMTPEnabled:   boolPointer(plan.SMTPEnabled),
-		InitialRoutes: lettermint.InitialRoutes(plan.InitialRoutes.ValueString()),
+		InitialRoutes: initialRoutes(plan.InitialRoutes),
 		ShortToken:    boolPointer(plan.ShortToken),
 	})
 	if err != nil {
@@ -128,8 +128,8 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 	project := result.Data
 	if !plan.RedactEmailContent.IsNull() && !plan.RedactEmailContent.IsUnknown() && project.RedactEmailContent != plan.RedactEmailContent.ValueBool() {
-		updated, updateErr := r.client.API.Projects.Update(ctx, project.ID, lettermint.ProjectUpdateRequest{
-			RedactEmailContent: boolPointer(plan.RedactEmailContent),
+		updated, updateErr := r.client.Projects.Update(ctx, project.ID, lettermint.UpdateProjectData{
+			RedactEmailContent: knownBool(plan.RedactEmailContent),
 		})
 		if updateErr != nil {
 			appendClientDiagnostic(&resp.Diagnostics, "Project was created, but its settings could not be updated", updateErr)
@@ -139,7 +139,13 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	state := projectModelFromAPI(project, plan)
-	state.APIToken = types.StringValue(result.APIToken)
+	// The API returns the token once. An absent token keeps the empty string
+	// that earlier provider versions stored.
+	apiToken := ""
+	if result.APIToken != nil {
+		apiToken = *result.APIToken
+	}
+	state.APIToken = types.StringValue(apiToken)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -150,7 +156,7 @@ func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	result, err := r.client.API.Projects.Retrieve(ctx, state.ID.ValueString())
+	result, err := r.client.Projects.Retrieve(ctx, state.ID.ValueString(), nil)
 	if isNotFound(err) {
 		resp.State.RemoveResource(ctx)
 		return
@@ -160,7 +166,7 @@ func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, re
 		return
 	}
 
-	state = projectModelFromAPI(lettermint.ProjectData(result), state)
+	state = projectModelFromAPI(*result, state)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -173,10 +179,10 @@ func (r *projectResource) Update(ctx context.Context, req resource.UpdateRequest
 		return
 	}
 
-	result, err := r.client.API.Projects.Update(ctx, state.ID.ValueString(), lettermint.ProjectUpdateRequest{
-		Name:               stringPointer(plan.Name),
-		SMTPEnabled:        boolPointer(plan.SMTPEnabled),
-		RedactEmailContent: boolPointer(plan.RedactEmailContent),
+	result, err := r.client.Projects.Update(ctx, state.ID.ValueString(), lettermint.UpdateProjectData{
+		Name:               knownString(plan.Name),
+		SMTPEnabled:        knownBool(plan.SMTPEnabled),
+		RedactEmailContent: knownBool(plan.RedactEmailContent),
 	})
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot update project", err)
@@ -195,7 +201,7 @@ func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	_, err := r.client.API.Projects.Delete(ctx, state.ID.ValueString())
+	_, err := r.client.Projects.Delete(ctx, state.ID.ValueString())
 	if err != nil && !isNotFound(err) {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot delete project", err)
 	}
@@ -213,8 +219,16 @@ func projectModelFromAPI(project lettermint.ProjectData, previous projectResourc
 	previous.DefaultRouteID = nullableString(project.DefaultRouteID)
 	previous.TokenGeneratedAt = nullableString(project.TokenGeneratedAt)
 	previous.TokenLastUsedAt = nullableString(project.TokenLastUsedAt)
-	previous.TokenLastUsedIP = nullableString(project.TokenLastUsedIp)
+	previous.TokenLastUsedIP = nullableString(project.TokenLastUsedIP)
 	previous.CreatedAt = stringValue(project.CreatedAt)
 	previous.UpdatedAt = stringValue(project.UpdatedAt)
 	return previous
+}
+
+func initialRoutes(value types.String) *lettermint.InitialRoutes {
+	if value.IsNull() || value.IsUnknown() || value.ValueString() == "" {
+		return nil
+	}
+	routes := lettermint.InitialRoutes(value.ValueString())
+	return &routes
 }

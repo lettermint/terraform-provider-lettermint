@@ -14,7 +14,7 @@ import (
 	datasourceschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func dataSourceConfig(t *testing.T, schema datasourceschema.Schema, value any) tfsdk.Config {
@@ -29,15 +29,15 @@ func dataSourceConfig(t *testing.T, schema datasourceschema.Schema, value any) t
 
 func dataSourceClient(t *testing.T, transport roundTripFunc) *clientData {
 	t.Helper()
-	api, err := lettermint.NewAPI(
-		"team-secret",
+	api, err := lettermint.New(
+		lettermint.WithTeamToken("team-secret"),
 		lettermint.WithBaseURL("https://api.example.test/v1"),
 		lettermint.WithHTTPClient(&http.Client{Transport: transport}),
 	)
 	if err != nil {
-		t.Fatalf("NewAPI() error = %v", err)
+		t.Fatalf("New() error = %v", err)
 	}
-	return &clientData{API: api}
+	return &clientData{Client: api}
 }
 
 func TestProjectsDataSourceUsesDocumentedQueriesAndPagination(t *testing.T) {
@@ -113,12 +113,12 @@ func TestWebhooksDataSourceUsesOnlyDocumentedFirstPageQuery(t *testing.T) {
 		if got := request.Header.Get("Authorization"); got != "Bearer team-secret" {
 			t.Errorf("Authorization = %q", got)
 		}
+		// The SDK sends booleans as 1/0 and leaves out an empty sort list.
 		expectedQuery := url.Values{
-			"filter[enabled]":  {"false"},
+			"filter[enabled]":  {"0"},
 			"filter[event]":    {"message.delivered"},
 			"filter[route_id]": {testRouteID},
 			"filter[search]":   {"delivery"},
-			"sort":             {""},
 		}
 		if !reflect.DeepEqual(request.URL.Query(), expectedQuery) {
 			t.Errorf("query = %#v, want %#v", request.URL.Query(), expectedQuery)

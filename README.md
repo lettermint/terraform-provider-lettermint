@@ -95,7 +95,7 @@ This provider does not recover DNS records on import. See the [domain DNS guide]
 
 ## Provider Scope
 
-This provider uses `github.com/lettermint/lettermint-go/v2`. The Basic Auth change depends on [Go SDK PR #34](https://github.com/lettermint/lettermint-go/pull/34). The module version pins that public commit until a package release is available. It does not use a second HTTP client.
+This provider uses the Lettermint Go SDK v3 (`github.com/lettermint/lettermint-go/v3`). It creates one SDK client with the team token and does not use a second HTTP client.
 
 This provider supports webhook Basic Auth through write-only credentials. It does not include delivery modes, expanded webhook scopes, relationship reads, sending, messages, statistics, suppressions, webhook deliveries, token or secret rotation, or webhook tests. These are provider exclusions, not limits of the current Go SDK. See [`contracts/coverage.json`](contracts/coverage.json) for the complete operation and field classification.
 

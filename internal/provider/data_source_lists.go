@@ -2,7 +2,6 @@ package provider
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -11,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 type projectsDataSource struct{ client *clientData }
@@ -109,16 +109,6 @@ func sortAttribute(values ...string) schema.ListAttribute {
 		Validators:  []validator.List{listvalidator.ValueStringsAre(stringvalidator.OneOf(values...))},
 	}
 }
-func addPageSize(query map[string]string, size types.Int64) {
-	if !size.IsNull() && !size.IsUnknown() {
-		query["page[size]"] = strconv.FormatInt(size.ValueInt64(), 10)
-	}
-}
-func addStringQuery(query map[string]string, key string, value types.String) {
-	if !value.IsNull() && !value.IsUnknown() {
-		query[key] = value.ValueString()
-	}
-}
 
 func (d *projectsDataSource) Metadata(_ context.Context, req datasource.MetadataRequest, resp *datasource.MetadataResponse) {
 	resp.TypeName = req.ProviderTypeName + "_projects"
@@ -141,26 +131,21 @@ func (d *projectsDataSource) Read(ctx context.Context, req datasource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	query := map[string]string{}
 	config.Projects = []projectListModel{}
-	addStringQuery(query, "filter[search]", config.Search)
-	addPageSize(query, config.PageSize)
-	if sort, configured := queryList(ctx, config.Sort, &resp.Diagnostics); configured {
-		query["sort"] = sort
+	query := &lettermint.ListProjectsQuery{
+		FilterSearch: queryString(config.Search),
+		PageSize:     queryInt(config.PageSize),
+		Sort:         queryList[lettermint.ListProjectsQuerySortItem](ctx, config.Sort, &resp.Diagnostics),
 	}
-	for {
-		result, err := d.client.API.Projects.List(ctx, query)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	for item, err := range d.client.Projects.Iterate(ctx, query) {
 		if err != nil {
 			appendClientDiagnostic(&resp.Diagnostics, "Cannot list projects", err)
 			return
 		}
-		for _, item := range result.Data {
-			config.Projects = append(config.Projects, projectListModel{ID: stringValue(item.ID), Name: stringValue(item.Name), SMTPEnabled: types.BoolValue(item.SMTPEnabled), RoutesCount: types.Int64Value(int64(item.RoutesCount)), DomainsCount: types.Int64Value(int64(item.DomainsCount)), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
-		}
-		if result.NextCursor == nil {
-			break
-		}
-		query["page[cursor]"] = *result.NextCursor
+		config.Projects = append(config.Projects, projectListModel{ID: stringValue(item.ID), Name: stringValue(item.Name), SMTPEnabled: types.BoolValue(item.SMTPEnabled), RoutesCount: types.Int64Value(int64(item.RoutesCount)), DomainsCount: types.Int64Value(int64(item.DomainsCount)), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &config)...)
 }
@@ -189,28 +174,23 @@ func (d *domainsDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	query := map[string]string{}
 	config.Domains = []domainListModel{}
-	addStringQuery(query, "filter[project]", config.ProjectID)
-	addStringQuery(query, "filter[status]", config.Status)
-	addStringQuery(query, "filter[domain]", config.Domain)
-	addPageSize(query, config.PageSize)
-	if sort, configured := queryList(ctx, config.Sort, &resp.Diagnostics); configured {
-		query["sort"] = sort
+	query := &lettermint.ListDomainsQuery{
+		FilterProject: queryString(config.ProjectID),
+		FilterStatus:  lettermint.DomainStatus(queryString(config.Status)),
+		FilterDomain:  queryString(config.Domain),
+		PageSize:      queryInt(config.PageSize),
+		Sort:          queryList[lettermint.ListDomainsQuerySortItem](ctx, config.Sort, &resp.Diagnostics),
 	}
-	for {
-		result, err := d.client.API.Domains.List(ctx, query)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	for item, err := range d.client.Domains.Iterate(ctx, query) {
 		if err != nil {
 			appendClientDiagnostic(&resp.Diagnostics, "Cannot list domains", err)
 			return
 		}
-		for _, item := range result.Data {
-			config.Domains = append(config.Domains, domainListModel{ID: stringValue(item.ID), Domain: stringValue(item.Domain), Status: stringValue(string(item.Status)), DKIMMode: stringValue(string(item.DkimMode)), StatusChangedAt: nullableString(item.StatusChangedAt), CreatedAt: stringValue(item.CreatedAt)})
-		}
-		if result.NextCursor == nil {
-			break
-		}
-		query["page[cursor]"] = *result.NextCursor
+		config.Domains = append(config.Domains, domainListModel{ID: stringValue(item.ID), Domain: stringValue(item.Domain), Status: stringValue(string(item.Status)), DKIMMode: stringValue(string(item.DkimMode)), StatusChangedAt: nullableString(item.StatusChangedAt), CreatedAt: stringValue(item.CreatedAt)})
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &config)...)
 }
@@ -241,30 +221,23 @@ func (d *routesDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	query := map[string]string{}
 	config.Routes = []routeListModel{}
-	addStringQuery(query, "filter[route_type]", config.RouteType)
-	addStringQuery(query, "filter[search]", config.Search)
-	addPageSize(query, config.PageSize)
-	if !config.IsDefault.IsNull() && !config.IsDefault.IsUnknown() {
-		query["filter[is_default]"] = queryBool(config.IsDefault)
+	query := &lettermint.ListRoutesQuery{
+		FilterRouteType: lettermint.RouteType(queryString(config.RouteType)),
+		FilterIsDefault: boolPointer(config.IsDefault),
+		FilterSearch:    queryString(config.Search),
+		PageSize:        queryInt(config.PageSize),
+		Sort:            queryList[lettermint.ListRoutesQuerySortItem](ctx, config.Sort, &resp.Diagnostics),
 	}
-	if sort, configured := queryList(ctx, config.Sort, &resp.Diagnostics); configured {
-		query["sort"] = sort
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	for {
-		result, err := d.client.API.Projects.Routes(ctx, config.ProjectID.ValueString(), query)
+	for item, err := range d.client.Routes.Iterate(ctx, config.ProjectID.ValueString(), query) {
 		if err != nil {
 			appendClientDiagnostic(&resp.Diagnostics, "Cannot list routes", err)
 			return
 		}
-		for _, item := range result.Data {
-			config.Routes = append(config.Routes, routeListModel{ID: stringValue(item.ID), Slug: stringValue(item.Slug), Name: stringValue(item.Name), RouteType: stringValue(string(item.RouteType)), IsDefault: types.BoolValue(item.IsDefault), WebhooksCount: types.Int64Value(int64(item.WebhooksCount)), SuppressedRecipientsCount: types.Int64Value(int64(item.SuppressedRecipientsCount)), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
-		}
-		if result.NextCursor == nil {
-			break
-		}
-		query["page[cursor]"] = *result.NextCursor
+		config.Routes = append(config.Routes, routeListModel{ID: stringValue(item.ID), Slug: stringValue(item.Slug), Name: stringValue(item.Name), RouteType: stringValue(string(item.RouteType)), IsDefault: types.BoolValue(item.IsDefault), WebhooksCount: types.Int64Value(int64(item.WebhooksCount)), SuppressedRecipientsCount: types.Int64Value(int64(item.SuppressedRecipientsCount)), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &config)...)
 }
@@ -300,17 +273,18 @@ func (d *webhooksDataSource) Read(ctx context.Context, req datasource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	query := map[string]string{"filter[route_id]": config.RouteID.ValueString()}
 	config.Webhooks = []webhookListModel{}
-	addStringQuery(query, "filter[event]", config.Event)
-	addStringQuery(query, "filter[search]", config.Search)
-	if !config.Enabled.IsNull() && !config.Enabled.IsUnknown() {
-		query["filter[enabled]"] = queryBool(config.Enabled)
+	query := &lettermint.ListWebhooksQuery{
+		FilterRouteID: config.RouteID.ValueString(),
+		FilterEvent:   lettermint.WebhookEvent(queryString(config.Event)),
+		FilterSearch:  queryString(config.Search),
+		FilterEnabled: boolPointer(config.Enabled),
+		Sort:          queryList[lettermint.ListWebhooksQuerySortItem](ctx, config.Sort, &resp.Diagnostics),
 	}
-	if sort, configured := queryList(ctx, config.Sort, &resp.Diagnostics); configured {
-		query["sort"] = sort
+	if resp.Diagnostics.HasError() {
+		return
 	}
-	result, err := d.client.API.Webhooks.List(ctx, query)
+	result, err := d.client.Webhooks.List(ctx, query)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot list webhooks", err)
 		return

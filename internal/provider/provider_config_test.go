@@ -7,16 +7,16 @@ import (
 	frameworkprovider "github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func configuredProviderToken(t *testing.T, token types.String) (string, bool) {
 	t.Helper()
 	underTest := &lettermintProvider{version: "test"}
 	captured := ""
-	underTest.clientFactory = func(token string) (*lettermint.APIClient, error) {
+	underTest.clientFactory = func(token string) (*lettermint.Client, error) {
 		captured = token
-		return lettermint.NewAPI(token)
+		return lettermint.New(lettermint.WithTeamToken(token))
 	}
 	var schemaResponse frameworkprovider.SchemaResponse
 	underTest.Schema(context.Background(), frameworkprovider.SchemaRequest{}, &schemaResponse)

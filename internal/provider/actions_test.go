@@ -11,7 +11,7 @@ import (
 	actionschema "github.com/hashicorp/terraform-plugin-framework/action/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func actionConfig(ctx context.Context, schema actionschema.Schema, values map[string]string) tfsdk.Config {
@@ -98,9 +98,9 @@ func TestVerificationActionsUseDocumentedRequests(t *testing.T) {
 					Request:    request,
 				}, nil
 			})}
-			api, err := lettermint.NewAPI("team-secret", lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(client))
+			api, err := lettermint.New(lettermint.WithTeamToken("team-secret"), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(client))
 			if err != nil {
-				t.Fatalf("NewAPI() error = %v", err)
+				t.Fatalf("New() error = %v", err)
 			}
 
 			var schema actionschema.Schema
@@ -121,7 +121,7 @@ func TestVerificationActionsUseDocumentedRequests(t *testing.T) {
 
 			var progress string
 			response := &action.InvokeResponse{SendProgress: func(event action.InvokeProgressEvent) { progress = event.Message }}
-			testCase.invoke(ctx, &clientData{API: api}, actionConfig(ctx, schema, testCase.values), response)
+			testCase.invoke(ctx, &clientData{Client: api}, actionConfig(ctx, schema, testCase.values), response)
 			if response.Diagnostics.HasError() {
 				t.Fatalf("invoke diagnostics = %v", response.Diagnostics)
 			}

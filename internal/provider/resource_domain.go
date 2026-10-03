@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 var (
@@ -102,13 +102,13 @@ func (r *domainResource) Create(ctx context.Context, req resource.CreateRequest,
 		return
 	}
 
-	result, err := r.client.API.Domains.Create(ctx, lettermint.DomainStoreRequest{Domain: plan.Domain.ValueString()})
+	result, err := r.client.Domains.Create(ctx, lettermint.StoreDomainData{Domain: plan.Domain.ValueString()})
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot create domain", err)
 		return
 	}
 
-	state := domainModelFromAPI(lettermint.DomainData(result), plan)
+	state := domainModelFromAPI(*result, plan)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -119,7 +119,7 @@ func (r *domainResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	result, err := r.client.API.Domains.Retrieve(ctx, state.ID.ValueString())
+	result, err := r.client.Domains.Retrieve(ctx, state.ID.ValueString(), nil)
 	if isNotFound(err) {
 		resp.State.RemoveResource(ctx)
 		return
@@ -129,7 +129,7 @@ func (r *domainResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	state = domainModelFromAPI(lettermint.DomainData(result), state)
+	state = domainModelFromAPI(*result, state)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -147,7 +147,7 @@ func (r *domainResource) Delete(ctx context.Context, req resource.DeleteRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	_, err := r.client.API.Domains.Delete(ctx, state.ID.ValueString())
+	_, err := r.client.Domains.Delete(ctx, state.ID.ValueString())
 	if err != nil && !isNotFound(err) {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot delete domain", err)
 	}
