@@ -17,6 +17,8 @@ Manage a route-scoped Lettermint webhook.
 
 The API returns `secret` only when it creates the webhook. Store the value securely. An import cannot recover it.
 
+`basic_auth` is write-only. Terraform does not store its username or password in state. Use an ephemeral variable for each credential. Set `basic_auth_version` when you set credentials. Increment it to rotate credentials. To remove credentials, set `basic_auth` to `null` and increment `basic_auth_version`. An omitted value with an unchanged version leaves remote credentials unchanged. An empty password is valid. These credentials apply to webhook delivery, not API authentication.
+
 ## Import
 
 {{ codefile "shell" "examples/resources/lettermint_webhook/import.sh" }}

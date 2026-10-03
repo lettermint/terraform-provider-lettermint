@@ -46,6 +46,7 @@ Read-Only:
 - `created_at` (String)
 - `enabled` (Boolean)
 - `events` (List of String)
+- `has_basic_auth` (Boolean) Whether the webhook has Basic Auth credentials.
 - `id` (String)
 - `last_called_at` (String)
 - `name` (String)

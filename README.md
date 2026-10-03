@@ -91,13 +91,13 @@ Terraform does not know the DNS record collection keys before Lettermint creates
 
 A later domain read can omit the optional DNS record relationship. The provider keeps the records that are already in state. It clears the records only when the API returns an empty array.
 
-An imported domain cannot recover DNS records. `lettermint-go` v2.6.0 cannot add `include=dnsRecords` to a domain read. See the [domain DNS guide](docs/guides/domain-dns.md) for the complete flow.
+This provider does not recover DNS records on import. See the [domain DNS guide](docs/guides/domain-dns.md) for the complete flow.
 
-## Current SDK Scope
+## Provider Scope
 
-This provider uses `github.com/lettermint/lettermint-go/v2` v2.6.0. It does not use a second HTTP client.
+This provider uses `github.com/lettermint/lettermint-go/v2`. The Basic Auth change depends on [Go SDK PR #34](https://github.com/lettermint/lettermint-go/pull/34). The module version pins that public commit until a package release is available. It does not use a second HTTP client.
 
-The current release does not include delivery modes, expanded webhook scopes, relationship reads, sending, messages, statistics, suppressions, webhook deliveries, token or secret rotation, or webhook tests. See [`contracts/coverage.json`](contracts/coverage.json) for the complete operation and field classification.
+This provider supports webhook Basic Auth through write-only credentials. It does not include delivery modes, expanded webhook scopes, relationship reads, sending, messages, statistics, suppressions, webhook deliveries, token or secret rotation, or webhook tests. These are provider exclusions, not limits of the current Go SDK. See [`contracts/coverage.json`](contracts/coverage.json) for the complete operation and field classification.
 
 The webhook list API does not document a cursor request parameter. Therefore, the `lettermint_webhooks` data source returns the documented response page and does not send an undocumented cursor query.
 

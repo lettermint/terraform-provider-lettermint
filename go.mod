@@ -7,7 +7,7 @@ require (
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
 	github.com/hashicorp/terraform-plugin-go v0.31.0
 	github.com/hashicorp/terraform-plugin-testing v1.16.0
-	github.com/lettermint/lettermint-go/v2 v2.6.0
+	github.com/lettermint/lettermint-go/v2 v2.7.1-0.20261002195742-bd37cb8ffc02
 )
 
 require (

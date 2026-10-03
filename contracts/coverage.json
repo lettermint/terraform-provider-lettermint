@@ -9,7 +9,7 @@
     {
       "id": "team",
       "file": "team-openapi.json",
-      "sha256": "d29092db4b56011987088aadd8b71d2e3fe8a242441b206bfa6cf49d7409c31e"
+      "sha256": "e385c5f9b330633e943729ecb0e1b93fca96e84fecb2f111b3af8f0bafa0cc75"
     }
   ],
   "operations": [
@@ -1321,7 +1321,7 @@
     {
       "key": "team#/components/schemas/ProjectData/properties/delivery_mode",
       "source_pointer": "/components/schemas/ProjectData/properties/delivery_mode",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/ProjectData/properties/domains",
@@ -1396,7 +1396,7 @@
     {
       "key": "team#/components/schemas/ProjectListData/properties/delivery_mode",
       "source_pointer": "/components/schemas/ProjectListData/properties/delivery_mode",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/ProjectListData/properties/domains_count",
@@ -1491,7 +1491,7 @@
     {
       "key": "team#/components/schemas/RouteData/properties/inbound_mx_hostname",
       "source_pointer": "/components/schemas/RouteData/properties/inbound_mx_hostname",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/RouteData/properties/inbound_route_domain",
@@ -1961,7 +1961,7 @@
     {
       "key": "team#/components/schemas/StoreProjectData/properties/delivery_mode",
       "source_pointer": "/components/schemas/StoreProjectData/properties/delivery_mode",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreProjectData/properties/initial_routes",
@@ -1976,7 +1976,7 @@
     {
       "key": "team#/components/schemas/StoreProjectData/properties/redact_email_content",
       "source_pointer": "/components/schemas/StoreProjectData/properties/redact_email_content",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreProjectData/properties/short_token",
@@ -1991,22 +1991,22 @@
     {
       "key": "team#/components/schemas/StoreRouteData/properties/attachment_delivery",
       "source_pointer": "/components/schemas/StoreRouteData/properties/attachment_delivery",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreRouteData/properties/inbound_domain",
       "source_pointer": "/components/schemas/StoreRouteData/properties/inbound_domain",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreRouteData/properties/inbound_settings",
       "source_pointer": "/components/schemas/StoreRouteData/properties/inbound_settings",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreRouteData/properties/inbound_spam_threshold",
       "source_pointer": "/components/schemas/StoreRouteData/properties/inbound_spam_threshold",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreRouteData/properties/name",
@@ -2021,7 +2021,7 @@
     {
       "key": "team#/components/schemas/StoreRouteData/properties/settings",
       "source_pointer": "/components/schemas/StoreRouteData/properties/settings",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreRouteData/properties/slug",
@@ -2064,9 +2064,14 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/StoreWebhookData/properties/basic_auth",
+      "source_pointer": "/components/schemas/StoreWebhookData/properties/basic_auth",
+      "status": "implemented"
+    },
+    {
       "key": "team#/components/schemas/StoreWebhookData/properties/delivery_mode_filter",
       "source_pointer": "/components/schemas/StoreWebhookData/properties/delivery_mode_filter",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/enabled",
@@ -2091,7 +2096,7 @@
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/project_ids",
       "source_pointer": "/components/schemas/StoreWebhookData/properties/project_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/route_id",
@@ -2101,12 +2106,12 @@
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/route_ids",
       "source_pointer": "/components/schemas/StoreWebhookData/properties/route_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/scope",
       "source_pointer": "/components/schemas/StoreWebhookData/properties/scope",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/StoreWebhookData/properties/url",
@@ -2206,7 +2211,7 @@
     {
       "key": "team#/components/schemas/TeamData/properties/domains_count",
       "source_pointer": "/components/schemas/TeamData/properties/domains_count",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/TeamData/properties/features",
@@ -2226,7 +2231,7 @@
     {
       "key": "team#/components/schemas/TeamData/properties/members_count",
       "source_pointer": "/components/schemas/TeamData/properties/members_count",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/TeamData/properties/name",
@@ -2241,7 +2246,7 @@
     {
       "key": "team#/components/schemas/TeamData/properties/projects_count",
       "source_pointer": "/components/schemas/TeamData/properties/projects_count",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/TeamData/properties/tier",
@@ -2381,12 +2386,12 @@
     {
       "key": "team#/components/schemas/UpdateProjectData/properties/default_route_id",
       "source_pointer": "/components/schemas/UpdateProjectData/properties/default_route_id",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateProjectData/properties/delivery_mode",
       "source_pointer": "/components/schemas/UpdateProjectData/properties/delivery_mode",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateProjectData/properties/name",
@@ -2406,12 +2411,12 @@
     {
       "key": "team#/components/schemas/UpdateRouteData/properties/attachment_delivery",
       "source_pointer": "/components/schemas/UpdateRouteData/properties/attachment_delivery",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateRouteData/properties/inbound_domain",
       "source_pointer": "/components/schemas/UpdateRouteData/properties/inbound_domain",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateRouteData/properties/inbound_settings",
@@ -2421,7 +2426,7 @@
     {
       "key": "team#/components/schemas/UpdateRouteData/properties/inbound_spam_threshold",
       "source_pointer": "/components/schemas/UpdateRouteData/properties/inbound_spam_threshold",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateRouteData/properties/name",
@@ -2514,9 +2519,14 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/UpdateWebhookData/properties/basic_auth",
+      "source_pointer": "/components/schemas/UpdateWebhookData/properties/basic_auth",
+      "status": "implemented"
+    },
+    {
       "key": "team#/components/schemas/UpdateWebhookData/properties/delivery_mode_filter",
       "source_pointer": "/components/schemas/UpdateWebhookData/properties/delivery_mode_filter",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/enabled",
@@ -2541,22 +2551,22 @@
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/project_ids",
       "source_pointer": "/components/schemas/UpdateWebhookData/properties/project_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/route_id",
       "source_pointer": "/components/schemas/UpdateWebhookData/properties/route_id",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/route_ids",
       "source_pointer": "/components/schemas/UpdateWebhookData/properties/route_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/scope",
       "source_pointer": "/components/schemas/UpdateWebhookData/properties/scope",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/UpdateWebhookData/properties/url",
@@ -2569,6 +2579,16 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/WebhookBasicAuthData/properties/password",
+      "source_pointer": "/components/schemas/WebhookBasicAuthData/properties/password",
+      "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/WebhookBasicAuthData/properties/username",
+      "source_pointer": "/components/schemas/WebhookBasicAuthData/properties/username",
+      "status": "implemented"
+    },
+    {
       "key": "team#/components/schemas/WebhookData/properties/created_at",
       "source_pointer": "/components/schemas/WebhookData/properties/created_at",
       "status": "implemented"
@@ -2576,7 +2596,7 @@
     {
       "key": "team#/components/schemas/WebhookData/properties/delivery_mode_filter",
       "source_pointer": "/components/schemas/WebhookData/properties/delivery_mode_filter",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookData/properties/enabled",
@@ -2586,6 +2606,11 @@
     {
       "key": "team#/components/schemas/WebhookData/properties/events",
       "source_pointer": "/components/schemas/WebhookData/properties/events",
+      "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/WebhookData/properties/has_basic_auth",
+      "source_pointer": "/components/schemas/WebhookData/properties/has_basic_auth",
       "status": "implemented"
     },
     {
@@ -2611,7 +2636,7 @@
     {
       "key": "team#/components/schemas/WebhookData/properties/project_ids",
       "source_pointer": "/components/schemas/WebhookData/properties/project_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookData/properties/route_id",
@@ -2621,12 +2646,12 @@
     {
       "key": "team#/components/schemas/WebhookData/properties/route_ids",
       "source_pointer": "/components/schemas/WebhookData/properties/route_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookData/properties/scope",
       "source_pointer": "/components/schemas/WebhookData/properties/scope",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookData/properties/updated_at",
@@ -2796,7 +2821,7 @@
     {
       "key": "team#/components/schemas/WebhookListData/properties/delivery_mode_filter",
       "source_pointer": "/components/schemas/WebhookListData/properties/delivery_mode_filter",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookListData/properties/enabled",
@@ -2806,6 +2831,11 @@
     {
       "key": "team#/components/schemas/WebhookListData/properties/events",
       "source_pointer": "/components/schemas/WebhookListData/properties/events",
+      "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/WebhookListData/properties/has_basic_auth",
+      "source_pointer": "/components/schemas/WebhookListData/properties/has_basic_auth",
       "status": "implemented"
     },
     {
@@ -2826,7 +2856,7 @@
     {
       "key": "team#/components/schemas/WebhookListData/properties/project_ids",
       "source_pointer": "/components/schemas/WebhookListData/properties/project_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookListData/properties/route_id",
@@ -2836,12 +2866,12 @@
     {
       "key": "team#/components/schemas/WebhookListData/properties/route_ids",
       "source_pointer": "/components/schemas/WebhookListData/properties/route_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookListData/properties/scope",
       "source_pointer": "/components/schemas/WebhookListData/properties/scope",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookListData/properties/updated_at",
@@ -2861,7 +2891,7 @@
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/delivery_mode_filter",
       "source_pointer": "/components/schemas/WebhookSecretData/properties/delivery_mode_filter",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/enabled",
@@ -2871,6 +2901,11 @@
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/events",
       "source_pointer": "/components/schemas/WebhookSecretData/properties/events",
+      "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/WebhookSecretData/properties/has_basic_auth",
+      "source_pointer": "/components/schemas/WebhookSecretData/properties/has_basic_auth",
       "status": "implemented"
     },
     {
@@ -2896,7 +2931,7 @@
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/project_ids",
       "source_pointer": "/components/schemas/WebhookSecretData/properties/project_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/route_id",
@@ -2906,12 +2941,12 @@
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/route_ids",
       "source_pointer": "/components/schemas/WebhookSecretData/properties/route_ids",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/scope",
       "source_pointer": "/components/schemas/WebhookSecretData/properties/scope",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/WebhookSecretData/properties/secret",
@@ -7786,7 +7821,7 @@
     {
       "key": "team#operation/domain.show/parameter/query/include",
       "source_pointer": "/paths/~1domains~1{domainId}/get/parameters/2",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#operation/domain.store/parameter/header/Authorization",
@@ -8476,7 +8511,7 @@
     {
       "key": "team#operation/webhook.index/parameter/query/filter[project]",
       "source_pointer": "/paths/~1webhooks/get/parameters/3",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#operation/webhook.index/parameter/query/filter[route_id]",
@@ -8486,7 +8521,7 @@
     {
       "key": "team#operation/webhook.index/parameter/query/filter[scope]",
       "source_pointer": "/paths/~1webhooks/get/parameters/7",
-      "status": "sdk-blocked"
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#operation/webhook.index/parameter/query/filter[search]",

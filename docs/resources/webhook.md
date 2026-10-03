@@ -28,23 +28,38 @@ resource "lettermint_webhook" "delivered" {
 
 - `events` (List of String) Webhook events.
 - `name` (String) Webhook name.
-- `route_id` (String) Route ID. The current SDK supports route-scoped webhooks only.
+- `route_id` (String) Route ID. This resource manages route-scoped webhooks only.
 - `url` (String) Webhook URL.
 
 ### Optional
 
+> **NOTE**: [Write-only arguments](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments) are supported in Terraform 1.11 and later.
+
+- `basic_auth` (Attributes, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Basic Auth credentials for webhook delivery. Terraform does not store these credentials in state. Increment basic_auth_version to rotate them. To remove them, set this value to null and increment basic_auth_version. (see [below for nested schema](#nestedatt--basic_auth))
+- `basic_auth_version` (Number) Local change number. Increment this number to rotate or remove Basic Auth credentials. This number is not sent to the API.
 - `enabled` (Boolean) Whether the webhook is enabled.
 - `include_machine_events` (Boolean) Whether machine events are included.
 
 ### Read-Only
 
 - `created_at` (String) Creation time.
+- `has_basic_auth` (Boolean) Whether the webhook has Basic Auth credentials. The API does not return the credentials.
 - `id` (String) Lettermint resource ID.
 - `last_called_at` (String) Last call time.
 - `secret` (String, Sensitive) Signing secret returned once when the webhook is created.
 - `updated_at` (String) Last update time.
 
+<a id="nestedatt--basic_auth"></a>
+### Nested Schema for `basic_auth`
+
+Required:
+
+- `password` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Basic Auth password. An empty string is valid. Whitespace is retained.
+- `username` (String, Sensitive, [Write-only](https://developer.hashicorp.com/terraform/language/resources/ephemeral#write-only-arguments)) Basic Auth username. Whitespace is retained.
+
 The API returns `secret` only when it creates the webhook. Store the value securely. An import cannot recover it.
+
+`basic_auth` is write-only. Terraform does not store its username or password in state. Use an ephemeral variable for each credential. Set `basic_auth_version` when you set credentials. Increment it to rotate credentials. To remove credentials, set `basic_auth` to `null` and increment `basic_auth_version`. An omitted value with an unchanged version leaves remote credentials unchanged. An empty password is valid. These credentials apply to webhook delivery, not API authentication.
 
 ## Import
 

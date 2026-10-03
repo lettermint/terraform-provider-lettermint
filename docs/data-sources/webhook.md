@@ -26,6 +26,7 @@ data "lettermint_webhook" "delivered" {
 - `created_at` (String)
 - `enabled` (Boolean)
 - `events` (List of String)
+- `has_basic_auth` (Boolean) Whether the webhook has Basic Auth credentials. The API does not return the credentials.
 - `id` (String) The ID of this resource.
 - `include_machine_events` (Boolean)
 - `last_called_at` (String)

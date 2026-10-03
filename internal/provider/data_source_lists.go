@@ -87,6 +87,7 @@ type webhookListModel struct {
 	URL          types.String `tfsdk:"url"`
 	Events       types.List   `tfsdk:"events"`
 	Enabled      types.Bool   `tfsdk:"enabled"`
+	HasBasicAuth types.Bool   `tfsdk:"has_basic_auth"`
 	LastCalledAt types.String `tfsdk:"last_called_at"`
 	CreatedAt    types.String `tfsdk:"created_at"`
 	UpdatedAt    types.String `tfsdk:"updated_at"`
@@ -289,7 +290,7 @@ func (d *webhooksDataSource) Schema(_ context.Context, _ datasource.SchemaReques
 		"sort":   sortAttribute("name", "-name", "url", "-url", "created_at", "-created_at"),
 		"webhooks": schema.ListNestedAttribute{Computed: true, NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{Computed: true}, "route_id": schema.StringAttribute{Computed: true}, "name": schema.StringAttribute{Computed: true}, "url": schema.StringAttribute{Computed: true}, "events": schema.ListAttribute{Computed: true, ElementType: types.StringType},
-			"enabled": schema.BoolAttribute{Computed: true}, "last_called_at": schema.StringAttribute{Computed: true}, "created_at": schema.StringAttribute{Computed: true}, "updated_at": schema.StringAttribute{Computed: true},
+			"enabled": schema.BoolAttribute{Computed: true}, "has_basic_auth": schema.BoolAttribute{Computed: true, Description: "Whether the webhook has Basic Auth credentials."}, "last_called_at": schema.StringAttribute{Computed: true}, "created_at": schema.StringAttribute{Computed: true}, "updated_at": schema.StringAttribute{Computed: true},
 		}}},
 	}}
 }
@@ -315,14 +316,14 @@ func (d *webhooksDataSource) Read(ctx context.Context, req datasource.ReadReques
 		return
 	}
 	for _, item := range result.Data {
-		if item.RouteID != config.RouteID.ValueString() {
+		if item.RouteID == nil || *item.RouteID != config.RouteID.ValueString() {
 			continue
 		}
 		eventValues := make([]attr.Value, 0, len(item.Events))
 		for _, event := range item.Events {
 			eventValues = append(eventValues, types.StringValue(string(event)))
 		}
-		config.Webhooks = append(config.Webhooks, webhookListModel{ID: stringValue(item.ID), RouteID: stringValue(item.RouteID), Name: stringValue(item.Name), URL: stringValue(item.URL), Events: types.ListValueMust(types.StringType, eventValues), Enabled: types.BoolValue(item.Enabled), LastCalledAt: nullableString(item.LastCalledAt), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
+		config.Webhooks = append(config.Webhooks, webhookListModel{ID: stringValue(item.ID), RouteID: nullableString(item.RouteID), Name: stringValue(item.Name), URL: stringValue(item.URL), Events: types.ListValueMust(types.StringType, eventValues), Enabled: types.BoolValue(item.Enabled), HasBasicAuth: types.BoolValue(item.HasBasicAuth), LastCalledAt: nullableString(item.LastCalledAt), CreatedAt: stringValue(item.CreatedAt), UpdatedAt: stringValue(item.UpdatedAt)})
 	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &config)...)
 }

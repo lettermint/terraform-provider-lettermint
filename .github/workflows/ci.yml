@@ -55,7 +55,7 @@ jobs:
       - name: Run Terraform acceptance tests
         env:
           TF_ACC: '1'
-        run: go test -count=1 -run TestAccCurrentSDKSubset -v ./internal/provider
+        run: go test -count=1 -run TestAcc -v ./internal/provider
 
       - name: Check module files
         shell: bash

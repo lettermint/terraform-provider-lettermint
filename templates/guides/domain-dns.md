@@ -19,4 +19,4 @@ Terraform actions require Terraform 1.14 or later.
 
 The domain read operation can omit the optional DNS record relationship. The provider keeps the records that are already in state. It clears them only when the API returns an empty array.
 
-The current `lettermint-go` version cannot add `include=dnsRecords` to a domain read. Therefore, an imported domain cannot recover DNS records. Recreate the domain under Terraform management if Terraform must configure its DNS records.
+This provider does not add `include=dnsRecords` to a domain read. Therefore, an imported domain cannot recover DNS records. This is a provider limit, not a limit of the current Go SDK. Keep this limit in mind before you import a domain.
