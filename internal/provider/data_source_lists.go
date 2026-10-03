@@ -284,12 +284,11 @@ func (d *webhooksDataSource) Read(ctx context.Context, req datasource.ReadReques
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := d.client.Webhooks.List(ctx, query)
-	if err != nil {
-		appendClientDiagnostic(&resp.Diagnostics, "Cannot list webhooks", err)
-		return
-	}
-	for _, item := range result.Data {
+	for item, err := range d.client.Webhooks.Iterate(ctx, query) {
+		if err != nil {
+			appendClientDiagnostic(&resp.Diagnostics, "Cannot list webhooks", err)
+			return
+		}
 		if item.RouteID == nil || *item.RouteID != config.RouteID.ValueString() {
 			continue
 		}

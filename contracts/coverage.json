@@ -4706,7 +4706,7 @@
     {
       "key": "team#operation/listWebhooks/parameter/query/cursor",
       "source_pointer": "/paths/~1webhooks/get/parameters/1",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#operation/listWebhooks/parameter/query/filter[enabled]",

@@ -99,7 +99,7 @@ This provider uses the Lettermint Go SDK v3 (`github.com/lettermint/lettermint-g
 
 This provider supports webhook Basic Auth through write-only credentials. It does not include delivery modes, expanded webhook scopes, relationship reads, sending, messages, statistics, suppressions, webhook deliveries, token or secret rotation, or webhook tests. These are provider exclusions, not limits of the current Go SDK. See [`contracts/coverage.json`](contracts/coverage.json) for the complete operation and field classification.
 
-The webhook list API does not document a cursor request parameter. Therefore, the `lettermint_webhooks` data source returns the documented response page and does not send an undocumented cursor query.
+The `lettermint_webhooks` data source follows the documented `cursor` parameter of the webhook list API and returns the webhooks of every page.
 
 ## Development
 

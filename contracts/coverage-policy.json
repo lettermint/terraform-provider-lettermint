@@ -296,6 +296,7 @@
     "team#operation/listWebhooks/parameter/query/filter[route_id]": "implemented",
     "team#operation/listWebhooks/parameter/query/filter[scope]": "intentionally-excluded",
     "team#operation/listWebhooks/parameter/query/filter[search]": "implemented",
+    "team#operation/listWebhooks/parameter/query/cursor": "implemented",
     "team#operation/listWebhooks/parameter/query/sort": "implemented"
   }
 }
