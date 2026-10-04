@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.1.0 - 2026-10-04
+
+### What's Changed
+
+* feat(webhooks): manage write-only Basic Auth credentials by @bjarn in https://github.com/lettermint/terraform-provider-lettermint/pull/5
+* feat: build on the Lettermint Go SDK v3 by @bjarn in https://github.com/lettermint/terraform-provider-lettermint/pull/6
+
+**Full Changelog**: https://github.com/lettermint/terraform-provider-lettermint/compare/v1.0.0...v1.1.0
+
 ## v1.0.0 - 2026-10-01
 
 ### What's Changed
