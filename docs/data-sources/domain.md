@@ -3,12 +3,12 @@
 page_title: "lettermint_domain Data Source - lettermint"
 subcategory: ""
 description: |-
-  Read one Lettermint domain. The current SDK cannot request DNS record includes.
+  Read one Lettermint domain. The provider does not request DNS record includes.
 ---
 
 # lettermint_domain (Data Source)
 
-Read one Lettermint domain. The current SDK cannot request DNS record includes.
+Read one Lettermint domain. The provider does not request DNS record includes.
 
 ## Example Usage
 

@@ -17,7 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 const (
@@ -269,9 +269,9 @@ func acceptanceProviderFactories(api *acceptanceAPI) map[string]func() (tfprotov
 	return map[string]func() (tfprotov6.ProviderServer, error){
 		"lettermint": providerserver.NewProtocol6WithError(&lettermintProvider{
 			version: "test",
-			clientFactory: func(token string) (*lettermint.APIClient, error) {
-				return lettermint.NewAPI(
-					token,
+			clientFactory: func(token string) (*lettermint.Client, error) {
+				return lettermint.New(
+					lettermint.WithTeamToken(token),
 					lettermint.WithBaseURL("https://api.example.test/v1"),
 					lettermint.WithHTTPClient(&http.Client{Transport: api}),
 				)

@@ -60,4 +60,4 @@ Read-Only:
 terraform import lettermint_domain.example 00000000-0000-4000-8000-000000000000
 ```
 
-An imported domain cannot recover `dns_records`. The current SDK cannot request the optional DNS record relationship during a domain read.
+An imported domain cannot recover `dns_records`. The provider does not request the optional DNS record relationship during a domain read.

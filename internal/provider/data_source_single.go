@@ -6,7 +6,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
 )
 
 type teamDataSource struct{ client *clientData }
@@ -87,12 +86,12 @@ func (d *teamDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 	}}
 }
 func (d *teamDataSource) Read(ctx context.Context, _ datasource.ReadRequest, resp *datasource.ReadResponse) {
-	result, err := d.client.API.Team.Retrieve(ctx)
+	result, err := d.client.Team.Retrieve(ctx, nil)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read team", err)
 		return
 	}
-	team := lettermint.TeamData(result)
+	team := *result
 	state := teamDataSourceModel{
 		ID: stringValue(team.ID), Name: stringValue(team.Name), Type: stringValue(string(team.Type)), Plan: stringValue(string(team.Plan)),
 		IncludedVolume: types.Int64Value(int64(team.IncludedVolume)), Tier: types.Int64Value(int64(team.Tier)), VerifiedAt: nullableString(team.VerifiedAt),
@@ -121,13 +120,13 @@ func (d *projectDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := d.client.API.Projects.Retrieve(ctx, config.ID.ValueString())
+	result, err := d.client.Projects.Retrieve(ctx, config.ID.ValueString(), nil)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read project", err)
 		return
 	}
-	project := lettermint.ProjectData(result)
-	state := projectDataSourceModel{ID: stringValue(project.ID), Name: stringValue(project.Name), SMTPEnabled: types.BoolValue(project.SMTPEnabled), RedactEmailContent: types.BoolValue(project.RedactEmailContent), DefaultRouteID: nullableString(project.DefaultRouteID), TokenGeneratedAt: nullableString(project.TokenGeneratedAt), TokenLastUsedAt: nullableString(project.TokenLastUsedAt), TokenLastUsedIP: nullableString(project.TokenLastUsedIp), CreatedAt: stringValue(project.CreatedAt), UpdatedAt: stringValue(project.UpdatedAt)}
+	project := *result
+	state := projectDataSourceModel{ID: stringValue(project.ID), Name: stringValue(project.Name), SMTPEnabled: types.BoolValue(project.SMTPEnabled), RedactEmailContent: types.BoolValue(project.RedactEmailContent), DefaultRouteID: nullableString(project.DefaultRouteID), TokenGeneratedAt: nullableString(project.TokenGeneratedAt), TokenLastUsedAt: nullableString(project.TokenLastUsedAt), TokenLastUsedIP: nullableString(project.TokenLastUsedIP), CreatedAt: stringValue(project.CreatedAt), UpdatedAt: stringValue(project.UpdatedAt)}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -138,7 +137,7 @@ func (d *domainDataSource) Configure(_ context.Context, req datasource.Configure
 	configureDataSource(req.ProviderData, &d.client, resp)
 }
 func (d *domainDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, resp *datasource.SchemaResponse) {
-	resp.Schema = schema.Schema{Description: "Read one Lettermint domain. The current SDK cannot request DNS record includes.", Attributes: map[string]schema.Attribute{
+	resp.Schema = schema.Schema{Description: "Read one Lettermint domain. The provider does not request DNS record includes.", Attributes: map[string]schema.Attribute{
 		"id": schema.StringAttribute{Required: true}, "domain": schema.StringAttribute{Computed: true}, "dkim_mode": schema.StringAttribute{Computed: true},
 		"rotation_ready": schema.BoolAttribute{Computed: true}, "status_changed_at": schema.StringAttribute{Computed: true}, "created_at": schema.StringAttribute{Computed: true},
 	}}
@@ -149,12 +148,12 @@ func (d *domainDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := d.client.API.Domains.Retrieve(ctx, config.ID.ValueString())
+	result, err := d.client.Domains.Retrieve(ctx, config.ID.ValueString(), nil)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read domain", err)
 		return
 	}
-	domain := lettermint.DomainData(result)
+	domain := *result
 	state := domainDataSourceModel{ID: stringValue(domain.ID), Domain: stringValue(domain.Domain), DKIMMode: stringValue(string(domain.DkimMode)), RotationReady: types.BoolValue(domain.RotationReady), StatusChangedAt: nullableString(domain.StatusChangedAt), CreatedAt: stringValue(domain.CreatedAt)}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
@@ -175,12 +174,12 @@ func (d *routeDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := d.client.API.Routes.Retrieve(ctx, config.ID.ValueString())
+	result, err := d.client.Routes.Retrieve(ctx, config.ID.ValueString(), nil)
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read route", err)
 		return
 	}
-	state := routeModelFromAPI(lettermint.RouteData(result))
+	state := routeModelFromAPI(*result)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -217,12 +216,12 @@ func (d *webhookDataSource) Read(ctx context.Context, req datasource.ReadRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := d.client.API.Webhooks.Retrieve(ctx, config.ID.ValueString())
+	result, err := d.client.Webhooks.Retrieve(ctx, config.ID.ValueString())
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read webhook", err)
 		return
 	}
-	webhook := lettermint.WebhookData(result)
+	webhook := *result
 	if webhook.RouteID == nil || *webhook.RouteID == "" {
 		resp.Diagnostics.AddError("Unsupported webhook scope", "This data source reads route-scoped webhooks only.")
 		return

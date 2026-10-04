@@ -55,7 +55,7 @@ func (a *verifyDomainDNSAction) Invoke(ctx context.Context, req action.InvokeReq
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := a.client.API.Domains.VerifyDNSRecords(ctx, config.DomainID.ValueString())
+	result, err := a.client.Domains.VerifyDNSRecords(ctx, config.DomainID.ValueString())
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot verify domain DNS records", err)
 		return
@@ -86,7 +86,7 @@ func (a *verifyDomainDNSRecordAction) Invoke(ctx context.Context, req action.Inv
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := a.client.API.Domains.VerifyDNSRecord(ctx, config.DomainID.ValueString(), config.RecordID.ValueString())
+	result, err := a.client.Domains.VerifyDNSRecord(ctx, config.DomainID.ValueString(), config.RecordID.ValueString())
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot verify domain DNS record", err)
 		return
@@ -113,12 +113,12 @@ func (a *verifyRouteInboundDomainAction) Invoke(ctx context.Context, req action.
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := a.client.API.Routes.VerifyInboundDomain(ctx, config.RouteID.ValueString())
+	result, err := a.client.Routes.VerifyInboundDomain(ctx, config.RouteID.ValueString())
 	if err != nil {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot verify route inbound domain", err)
 		return
 	}
-	if message, ok := result.Data["message"].(string); ok && resp.SendProgress != nil {
-		resp.SendProgress(action.InvokeProgressEvent{Message: message})
+	if resp.SendProgress != nil {
+		resp.SendProgress(action.InvokeProgressEvent{Message: result.Data.Message})
 	}
 }

@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 type roundTripFunc func(*http.Request) (*http.Response, error)
@@ -115,11 +115,11 @@ func TestDomainCreateResponseDNSRecords(t *testing.T) {
 				}, nil
 			})}
 
-			api, err := lettermint.NewAPI("team-secret", lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(client))
+			api, err := lettermint.New(lettermint.WithTeamToken("team-secret"), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(client))
 			if err != nil {
-				t.Fatalf("NewAPI() error = %v", err)
+				t.Fatalf("New() error = %v", err)
 			}
-			underTest := &domainResource{client: &clientData{API: api}}
+			underTest := &domainResource{client: &clientData{Client: api}}
 
 			var schemaResponse resource.SchemaResponse
 			underTest.Schema(context.Background(), resource.SchemaRequest{}, &schemaResponse)

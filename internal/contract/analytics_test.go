@@ -23,7 +23,7 @@ func TestAnalyticsAndForwardingHaveExplicitCoverage(t *testing.T) {
 	for _, op := range coverage.Operations {
 		statuses[op.Key] = op.Status
 	}
-	for _, operation := range []string{"v1.analytics", "getReportForwarding", "updateReportForwarding", "deleteReportForwarding", "verifyReportForwarding", "resendReportForwardingCode"} {
+	for _, operation := range []string{"queryAnalytics", "getReportForwarding", "updateReportForwarding", "deleteReportForwarding", "verifyReportForwarding", "resendReportForwardingCode"} {
 		if statuses["team#"+operation] != "intentionally-excluded" {
 			t.Errorf("missing provider scope decision for %s", operation)
 		}

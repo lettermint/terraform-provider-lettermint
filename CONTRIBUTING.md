@@ -20,7 +20,7 @@ go mod download
 
 Keep each change small and focused. Add tests for changed behavior. Update the documentation when the provider interface changes.
 
-The provider must match both the source OpenAPI specifications and `github.com/lettermint/lettermint-go/v2`. Do not add an undocumented API request, default, retry, validation rule, or response status.
+The provider must match both the source OpenAPI specifications and `github.com/lettermint/lettermint-go/v3`. Do not add an undocumented API request, default, retry, validation rule, or response status.
 
 Do not copy source OpenAPI specifications into this repository. Keep them in the API repository. This repository stores only their names, hashes, and the coverage classification. When the API contract changes, review the change before you update its hash and coverage classification.
 

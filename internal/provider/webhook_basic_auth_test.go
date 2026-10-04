@@ -19,7 +19,7 @@ import (
 	testresource "github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/hashicorp/terraform-plugin-testing/tfversion"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func testBasicAuth(username, password types.String) types.Object {
@@ -52,21 +52,22 @@ func TestWebhookBasicAuthRequestStates(t *testing.T) {
 				return
 			}
 			if test.omitted {
-				if got != nil {
+				if got.IsSet() {
 					t.Fatal("credentials were not omitted")
 				}
 				return
 			}
-			if got == nil {
+			if !got.IsSet() {
 				t.Fatal("missing credential request")
 			}
 			if test.cleared {
-				if *got != nil {
+				if !got.IsNull() {
 					t.Fatal("credentials were not cleared")
 				}
 				return
 			}
-			if *got == nil || (**got).Username != " user " || (**got).Password != "" {
+			value, ok := got.Get()
+			if !ok || value.Username != " user " || value.Password != "" {
 				t.Fatal("credential strings changed")
 			}
 		})
@@ -131,7 +132,7 @@ func TestWebhookCredentialsDoNotEnterState(t *testing.T) {
 				}
 			}
 			calls := 0
-			api, err := lettermint.NewAPI("test-token", lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: basicAuthTransport(func(request *http.Request) (*http.Response, error) {
+			api, err := lettermint.New(lettermint.WithTeamToken("test-token"), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: basicAuthTransport(func(request *http.Request) (*http.Response, error) {
 				calls++
 				wantMethod, wantPath := http.MethodPut, "/v1/webhooks/"+testWebhookID
 				if mode == "create" {
@@ -156,7 +157,7 @@ func TestWebhookCredentialsDoNotEnterState(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			r := &webhookResource{client: &clientData{API: api}}
+			r := &webhookResource{client: &clientData{Client: api}}
 			var output tfsdk.State
 			if mode == "create" {
 				resp := resource.CreateResponse{State: tfsdk.State{Schema: s}}
@@ -253,8 +254,8 @@ func TestAccWebhookBasicAuth(t *testing.T) {
 		}
 		return nil, nil
 	})
-	factories := map[string]func() (tfprotov6.ProviderServer, error){"lettermint": providerserver.NewProtocol6WithError(&lettermintProvider{version: "test", clientFactory: func(token string) (*lettermint.APIClient, error) {
-		return lettermint.NewAPI(token, lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: transport}))
+	factories := map[string]func() (tfprotov6.ProviderServer, error){"lettermint": providerserver.NewProtocol6WithError(&lettermintProvider{version: "test", clientFactory: func(token string) (*lettermint.Client, error) {
+		return lettermint.New(lettermint.WithTeamToken(token), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: transport}))
 	}})}
 	config := func(auth string, version string) string {
 		return `provider "lettermint" { team_token = "test-token" }

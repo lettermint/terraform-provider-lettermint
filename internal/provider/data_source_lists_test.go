@@ -14,7 +14,7 @@ import (
 	datasourceschema "github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func dataSourceConfig(t *testing.T, schema datasourceschema.Schema, value any) tfsdk.Config {
@@ -29,15 +29,15 @@ func dataSourceConfig(t *testing.T, schema datasourceschema.Schema, value any) t
 
 func dataSourceClient(t *testing.T, transport roundTripFunc) *clientData {
 	t.Helper()
-	api, err := lettermint.NewAPI(
-		"team-secret",
+	api, err := lettermint.New(
+		lettermint.WithTeamToken("team-secret"),
 		lettermint.WithBaseURL("https://api.example.test/v1"),
 		lettermint.WithHTTPClient(&http.Client{Transport: transport}),
 	)
 	if err != nil {
-		t.Fatalf("NewAPI() error = %v", err)
+		t.Fatalf("New() error = %v", err)
 	}
-	return &clientData{API: api}
+	return &clientData{Client: api}
 }
 
 func TestProjectsDataSourceUsesDocumentedQueriesAndPagination(t *testing.T) {
@@ -101,7 +101,7 @@ func TestProjectsDataSourceUsesDocumentedQueriesAndPagination(t *testing.T) {
 	}
 }
 
-func TestWebhooksDataSourceUsesOnlyDocumentedFirstPageQuery(t *testing.T) {
+func TestWebhooksDataSourceFollowsDocumentedCursor(t *testing.T) {
 	t.Parallel()
 
 	requestCount := 0
@@ -113,17 +113,24 @@ func TestWebhooksDataSourceUsesOnlyDocumentedFirstPageQuery(t *testing.T) {
 		if got := request.Header.Get("Authorization"); got != "Bearer team-secret" {
 			t.Errorf("Authorization = %q", got)
 		}
+		// The SDK sends booleans as 1/0 and leaves out an empty sort list.
 		expectedQuery := url.Values{
-			"filter[enabled]":  {"false"},
+			"filter[enabled]":  {"0"},
 			"filter[event]":    {"message.delivered"},
 			"filter[route_id]": {testRouteID},
 			"filter[search]":   {"delivery"},
-			"sort":             {""},
+		}
+		// Webhook lists use the cursor parameter, not page[cursor].
+		if requestCount == 2 {
+			expectedQuery["cursor"] = []string{"next-page"}
 		}
 		if !reflect.DeepEqual(request.URL.Query(), expectedQuery) {
 			t.Errorf("query = %#v, want %#v", request.URL.Query(), expectedQuery)
 		}
-		body := `{"data":[{"id":"webhook-1","scope":"route","project_ids":[],"route_ids":["` + testRouteID + `"],"route_id":"` + testRouteID + `","name":"Delivery","url":"https://example.com/hook","events":["message.delivered"],"enabled":false,"last_called_at":null,"created_at":"2026-09-29T00:00:00Z","updated_at":"2026-09-29T00:00:00Z"}],"path":null,"per_page":30,"next_cursor":"not-requestable","next_page_url":null,"prev_cursor":null,"prev_page_url":null}`
+		body := `{"data":[{"id":"webhook-1","scope":"route","project_ids":[],"route_ids":["` + testRouteID + `"],"route_id":"` + testRouteID + `","name":"Delivery","url":"https://example.com/hook","events":["message.delivered"],"enabled":false,"last_called_at":null,"created_at":"2026-09-29T00:00:00Z","updated_at":"2026-09-29T00:00:00Z"}],"path":null,"per_page":15,"next_cursor":"next-page","next_page_url":null,"prev_cursor":null,"prev_page_url":null}`
+		if requestCount == 2 {
+			body = `{"data":[{"id":"webhook-2","scope":"route","project_ids":[],"route_ids":["` + testRouteID + `"],"route_id":"` + testRouteID + `","name":"Delivery 2","url":"https://example.com/hook-2","events":["message.delivered"],"enabled":false,"last_called_at":null,"created_at":"2026-09-29T00:00:00Z","updated_at":"2026-09-29T00:00:00Z"}],"path":null,"per_page":15,"next_cursor":null,"next_page_url":null,"prev_cursor":"previous-page","prev_page_url":null}`
+		}
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Header:     http.Header{"Content-Type": []string{"application/json"}},
@@ -148,14 +155,14 @@ func TestWebhooksDataSourceUsesOnlyDocumentedFirstPageQuery(t *testing.T) {
 	if response.Diagnostics.HasError() {
 		t.Fatalf("read diagnostics = %v", response.Diagnostics)
 	}
-	if requestCount != 1 {
-		t.Fatalf("request count = %d, want 1", requestCount)
+	if requestCount != 2 {
+		t.Fatalf("request count = %d, want 2", requestCount)
 	}
 	var state webhooksDataSourceModel
 	if diagnostics := response.State.Get(context.Background(), &state); diagnostics.HasError() {
 		t.Fatalf("state diagnostics = %v", diagnostics)
 	}
-	if len(state.Webhooks) != 1 || state.Webhooks[0].ID.ValueString() != "webhook-1" {
+	if len(state.Webhooks) != 2 || state.Webhooks[0].ID.ValueString() != "webhook-1" || state.Webhooks[1].ID.ValueString() != "webhook-2" {
 		t.Fatalf("webhooks = %#v", state.Webhooks)
 	}
 }

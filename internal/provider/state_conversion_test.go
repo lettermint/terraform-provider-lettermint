@@ -6,7 +6,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 func TestCreateOnlySecretsStayInState(t *testing.T) {

@@ -9,3 +9,7 @@ terraform-provider-lettermint
 *-openapi.json
 *-openapi.yaml
 *-openapi.yml
+
+# Local workspace for unpublished module development
+go.work
+go.work.sum

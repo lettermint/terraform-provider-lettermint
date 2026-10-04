@@ -15,7 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/lettermint/lettermint-go/v2"
+	"github.com/lettermint/lettermint-go/v3"
 )
 
 var (
@@ -117,13 +117,13 @@ func (r *webhookResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	result, err := r.client.API.Webhooks.Create(ctx, lettermint.WebhookStoreRequest{
-		RouteID:              stringPointer(plan.RouteID),
+	result, err := r.client.Webhooks.Create(ctx, lettermint.StoreWebhookData{
+		RouteID:              knownString(plan.RouteID),
 		Name:                 plan.Name.ValueString(),
 		URL:                  plan.URL.ValueString(),
 		Events:               events,
-		Enabled:              boolPointer(plan.Enabled),
-		IncludeMachineEvents: boolPointer(plan.IncludeMachineEvents),
+		Enabled:              knownBool(plan.Enabled),
+		IncludeMachineEvents: knownBool(plan.IncludeMachineEvents),
 		BasicAuth:            credentials,
 	})
 	if err != nil {
@@ -141,7 +141,7 @@ func (r *webhookResource) Read(ctx context.Context, req resource.ReadRequest, re
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := r.client.API.Webhooks.Retrieve(ctx, state.ID.ValueString())
+	result, err := r.client.Webhooks.Retrieve(ctx, state.ID.ValueString())
 	if isNotFound(err) {
 		resp.State.RemoveResource(ctx)
 		return
@@ -150,7 +150,7 @@ func (r *webhookResource) Read(ctx context.Context, req resource.ReadRequest, re
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot read webhook", err)
 		return
 	}
-	state = webhookModelFromAPI(ctx, lettermint.WebhookData(result), state, &resp.Diagnostics)
+	state = webhookModelFromAPI(ctx, *result, state, &resp.Diagnostics)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -169,9 +169,9 @@ func (r *webhookResource) Update(ctx context.Context, req resource.UpdateRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	result, err := r.client.API.Webhooks.Update(ctx, state.ID.ValueString(), lettermint.WebhookUpdateRequest{
-		Name:                 plan.Name.ValueString(),
-		URL:                  plan.URL.ValueString(),
+	result, err := r.client.Webhooks.Update(ctx, state.ID.ValueString(), lettermint.UpdateWebhookData{
+		Name:                 stringPointer(plan.Name),
+		URL:                  stringPointer(plan.URL),
 		Events:               events,
 		Enabled:              boolPointer(plan.Enabled),
 		IncludeMachineEvents: boolPointer(plan.IncludeMachineEvents),
@@ -192,7 +192,7 @@ func (r *webhookResource) Delete(ctx context.Context, req resource.DeleteRequest
 	if resp.Diagnostics.HasError() {
 		return
 	}
-	_, err := r.client.API.Webhooks.Delete(ctx, state.ID.ValueString())
+	_, err := r.client.Webhooks.Delete(ctx, state.ID.ValueString())
 	if err != nil && !isNotFound(err) {
 		appendClientDiagnostic(&resp.Diagnostics, "Cannot delete webhook", err)
 	}
@@ -202,12 +202,12 @@ func (r *webhookResource) ImportState(ctx context.Context, req resource.ImportSt
 	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
-func webhookEvents(ctx context.Context, value types.List, diags *diag.Diagnostics) []lettermint.APIWebhookEvent {
+func webhookEvents(ctx context.Context, value types.List, diags *diag.Diagnostics) []lettermint.WebhookEvent {
 	var values []string
 	diags.Append(value.ElementsAs(ctx, &values, false)...)
-	events := make([]lettermint.APIWebhookEvent, 0, len(values))
+	events := make([]lettermint.WebhookEvent, 0, len(values))
 	for _, value := range values {
-		events = append(events, lettermint.APIWebhookEvent(value))
+		events = append(events, lettermint.WebhookEvent(value))
 	}
 	return events
 }
@@ -256,24 +256,29 @@ func webhookBasicAuthTypes() map[string]attr.Type {
 	return map[string]attr.Type{"username": types.StringType, "password": types.StringType}
 }
 
-func webhookBasicAuthRequest(value types.Object, version, previous types.Int64, update bool, diags *diag.Diagnostics) **lettermint.WebhookBasicAuthData {
+// webhookBasicAuthRequest maps the write-only credentials to the request.
+// The result is absent when the credentials stay unchanged, null when an
+// update removes them (basic_auth is null and basic_auth_version changed), and
+// a value when the configuration sets them.
+func webhookBasicAuthRequest(value types.Object, version, previous types.Int64, update bool, diags *diag.Diagnostics) lettermint.Nullable[lettermint.WebhookBasicAuthData] {
+	var absent lettermint.Nullable[lettermint.WebhookBasicAuthData]
 	if value.IsUnknown() || version.IsUnknown() {
 		diags.AddError("Unknown Basic Auth configuration", "Basic Auth credentials and the version must be known before the API request.")
-		return nil
+		return absent
 	}
 	if value.IsNull() {
 		if update && !version.Equal(previous) {
-			return lettermint.ClearWebhookBasicAuth()
+			return lettermint.Null[lettermint.WebhookBasicAuthData]()
 		}
-		return nil
+		return absent
 	}
 	username, usernameOK := value.Attributes()["username"].(types.String)
 	password, passwordOK := value.Attributes()["password"].(types.String)
 	if version.IsNull() || !usernameOK || !passwordOK || username.IsNull() || password.IsNull() || username.IsUnknown() || password.IsUnknown() {
 		diags.AddError("Invalid Basic Auth configuration", "Set basic_auth_version and both credential strings. The password can be empty.")
-		return nil
+		return absent
 	}
-	return lettermint.SetWebhookBasicAuth(username.ValueString(), password.ValueString())
+	return lettermint.Value(lettermint.WebhookBasicAuthData{Username: username.ValueString(), Password: password.ValueString()})
 }
 
 func webhookFromSecret(value lettermint.WebhookSecretData) lettermint.WebhookData {
