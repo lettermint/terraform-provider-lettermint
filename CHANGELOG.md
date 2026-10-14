@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.0 - 2026-10-14
+
+### What's Changed
+
+* feat(provider): retry requests that hit the API rate limit by @bjarn in https://github.com/lettermint/terraform-provider-lettermint/pull/8
+
+**Full Changelog**: https://github.com/lettermint/terraform-provider-lettermint/compare/v1.1.0...v1.2.0
+
 ## v1.1.0 - 2026-10-04
 
 ### What's Changed
