@@ -254,8 +254,8 @@ func TestAccWebhookBasicAuth(t *testing.T) {
 		}
 		return nil, nil
 	})
-	factories := map[string]func() (tfprotov6.ProviderServer, error){"lettermint": providerserver.NewProtocol6WithError(&lettermintProvider{version: "test", clientFactory: func(token string) (*lettermint.Client, error) {
-		return lettermint.New(lettermint.WithTeamToken(token), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: transport}))
+	factories := map[string]func() (tfprotov6.ProviderServer, error){"lettermint": providerserver.NewProtocol6WithError(&lettermintProvider{version: "test", clientFactory: func(config clientConfig) (*lettermint.Client, error) {
+		return lettermint.New(lettermint.WithTeamToken(config.Token), lettermint.WithBaseURL("https://api.example.test/v1"), lettermint.WithHTTPClient(&http.Client{Transport: transport}))
 	}})}
 	config := func(auth string, version string) string {
 		return `provider "lettermint" { team_token = "test-token" }
