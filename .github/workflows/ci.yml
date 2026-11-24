@@ -130,3 +130,15 @@ jobs:
           grep -Fq "  ${manifest}" "$checksums"
           jq -e '.version == 1 and .metadata.protocol_versions == ["6.0"]' terraform-registry-manifest.json
           unzip -Z1 "dist/terraform-provider-lettermint_${version}_linux_amd64.zip" | grep -Fxq "terraform-provider-lettermint_v${version}"
+
+  # The one check branch protection requires. It fails when a job above failed or
+  # was cancelled; skipped jobs count as passed.
+  ci:
+    name: ci
+    if: ${{ always() }}
+    needs: [test, snapshot]
+    runs-on: ubuntu-slim
+    steps:
+      - name: Fail when a job failed or was cancelled
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
