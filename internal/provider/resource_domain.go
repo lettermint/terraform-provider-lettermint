@@ -3,12 +3,16 @@ package provider
 import (
 	"context"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/lettermint/lettermint-go/v3"
 )
@@ -30,6 +34,7 @@ type domainResourceModel struct {
 	RotationReady   types.Bool   `tfsdk:"rotation_ready"`
 	StatusChangedAt types.String `tfsdk:"status_changed_at"`
 	DNSRecords      types.List   `tfsdk:"dns_records"`
+	ProjectIDs      types.Set    `tfsdk:"project_ids"`
 	CreatedAt       types.String `tfsdk:"created_at"`
 }
 
@@ -59,7 +64,11 @@ func (r *domainResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 	resp.Schema = schema.Schema{
 		Description: "Manage a Lettermint sending domain.",
 		Attributes: map[string]schema.Attribute{
-			"id": computedIDAttribute(),
+			"id": schema.StringAttribute{
+				Computed:      true,
+				Description:   "Lettermint resource ID.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
 			"domain": schema.StringAttribute{
 				Required:      true,
 				Description:   "Domain name.",
@@ -70,8 +79,9 @@ func (r *domainResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 			"rotation_ready":    schema.BoolAttribute{Computed: true, Description: "Whether DKIM rotation is ready."},
 			"status_changed_at": schema.StringAttribute{Computed: true, Description: "Last domain status change time."},
 			"dns_records": schema.ListNestedAttribute{
-				Computed:    true,
-				Description: "DNS records returned when the domain is created. A later read preserves these records when the API omits the optional relationship.",
+				Computed:      true,
+				Description:   "DNS records returned when the domain is created. A later read preserves these records when the API omits the optional relationship.",
+				PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
 				NestedObject: schema.NestedAttributeObject{Attributes: map[string]schema.Attribute{
 					"id":                        schema.StringAttribute{Computed: true, Description: "DNS record ID."},
 					"type":                      schema.StringAttribute{Computed: true, Description: "DNS record type."},
@@ -86,7 +96,17 @@ func (r *domainResource) Schema(_ context.Context, _ resource.SchemaRequest, res
 					"last_checked_at":           schema.StringAttribute{Computed: true, Description: "Last verification check time."},
 				}},
 			},
-			"created_at": schema.StringAttribute{Computed: true, Description: "Creation time."},
+			"project_ids": schema.SetAttribute{
+				Optional:    true,
+				ElementType: types.StringType,
+				Description: "IDs of the projects that may send from the domain. An empty set lets every project in the team send from it. When this argument is not set, the provider does not read or change the project assignments.",
+				Validators:  []validator.Set{setvalidator.ValueStringsAre(uuidValidators()...)},
+			},
+			"created_at": schema.StringAttribute{
+				Computed:      true,
+				Description:   "Creation time.",
+				PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+			},
 		},
 	}
 }
@@ -109,6 +129,31 @@ func (r *domainResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 
 	state := domainModelFromAPI(*result, plan)
+	projectIDs := projectIDsFromPlan(ctx, plan.ProjectIDs, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	if len(projectIDs) == 0 {
+		// A new domain has no projects, so it is already available to every project.
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+		return
+	}
+
+	// Save the domain before the assignment, so that Terraform keeps track of it if the assignment fails.
+	state.ProjectIDs = domainProjectIDsValue(nil)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	updated, err := r.client.Domains.UpdateProjects(ctx, state.ID.ValueString(), lettermint.UpdateDomainProjectsData{ProjectIDs: projectIDs})
+	if err != nil {
+		appendClientDiagnostic(&resp.Diagnostics, "Cannot assign projects to domain", err)
+		return
+	}
+
+	state = domainModelFromAPI(updated.Data, state)
+	state.ProjectIDs = domainProjectIDsValue(updated.Data.Projects)
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
@@ -119,7 +164,13 @@ func (r *domainResource) Read(ctx context.Context, req resource.ReadRequest, res
 		return
 	}
 
-	result, err := r.client.Domains.Retrieve(ctx, state.ID.ValueString(), nil)
+	// Ask for projects only when the configuration manages them, because the include needs project read access.
+	var query *lettermint.GetDomainQuery
+	if !state.ProjectIDs.IsNull() {
+		query = &lettermint.GetDomainQuery{Include: []lettermint.GetDomainQueryIncludeItem{lettermint.GetDomainQueryIncludeItemProjects}}
+	}
+
+	result, err := r.client.Domains.Retrieve(ctx, state.ID.ValueString(), query)
 	if isNotFound(err) {
 		resp.State.RemoveResource(ctx)
 		return
@@ -130,15 +181,45 @@ func (r *domainResource) Read(ctx context.Context, req resource.ReadRequest, res
 	}
 
 	state = domainModelFromAPI(*result, state)
+	if query != nil {
+		state.ProjectIDs = domainProjectIDsValue(result.Projects)
+	}
 	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *domainResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan domainResourceModel
+	var state domainResourceModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
-	if !resp.Diagnostics.HasError() {
-		resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
 	}
+
+	// project_ids is the only argument that changes in place. A removed argument stops
+	// the management of the projects and leaves the assignments in Lettermint unchanged.
+	if plan.ProjectIDs.IsNull() || plan.ProjectIDs.Equal(state.ProjectIDs) {
+		state.ProjectIDs = plan.ProjectIDs
+		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
+		return
+	}
+
+	projectIDs := projectIDsFromPlan(ctx, plan.ProjectIDs, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	result, err := r.client.Domains.UpdateProjects(ctx, state.ID.ValueString(), lettermint.UpdateDomainProjectsData{ProjectIDs: projectIDs})
+	if err != nil {
+		appendClientDiagnostic(&resp.Diagnostics, "Cannot update domain projects", err)
+		return
+	}
+
+	dnsRecords := state.DNSRecords
+	state = domainModelFromAPI(result.Data, state)
+	state.DNSRecords = dnsRecords
+	state.ProjectIDs = domainProjectIDsValue(result.Data.Projects)
+	resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
 }
 
 func (r *domainResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
@@ -206,4 +287,28 @@ func domainDNSRecordValue(record lettermint.DomainDnsRecordData) types.Object {
 		"verified_at":               nullableString(record.VerifiedAt),
 		"last_checked_at":           nullableString(record.LastCheckedAt),
 	})
+}
+
+// projectIDsFromPlan returns the planned project IDs. The result is never nil,
+// because the API reads a JSON null differently from an empty list.
+func projectIDsFromPlan(ctx context.Context, value types.Set, diags *diag.Diagnostics) []string {
+	projectIDs := []string{}
+	if value.IsNull() || value.IsUnknown() {
+		return projectIDs
+	}
+	diags.Append(value.ElementsAs(ctx, &projectIDs, false)...)
+	if projectIDs == nil {
+		projectIDs = []string{}
+	}
+	return projectIDs
+}
+
+// domainProjectIDsValue maps the projects of a domain to a set of IDs. An absent
+// list is an empty set, because a domain without projects is available to every project.
+func domainProjectIDsValue(projects []lettermint.DomainDataProjectsItem) types.Set {
+	elements := make([]attr.Value, 0, len(projects))
+	for _, project := range projects {
+		elements = append(elements, types.StringValue(project.ID))
+	}
+	return types.SetValueMust(types.StringType, elements)
 }
