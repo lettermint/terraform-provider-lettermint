@@ -131,6 +131,7 @@ func TestDomainCreateResponseDNSRecords(t *testing.T) {
 				RotationReady:   types.BoolUnknown(),
 				StatusChangedAt: types.StringUnknown(),
 				DNSRecords:      types.ListUnknown(domainDNSRecordObjectType()),
+				ProjectIDs:      types.SetNull(types.StringType),
 				CreatedAt:       types.StringUnknown(),
 			})
 			if planDiagnostics.HasError() {

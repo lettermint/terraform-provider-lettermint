@@ -28,7 +28,7 @@
     "team#listDomains": "implemented",
     "team#getDomain": "implemented",
     "team#createDomain": "implemented",
-    "team#updateDomainProjects": "intentionally-excluded",
+    "team#updateDomainProjects": "implemented",
     "team#verifyDomainDnsRecords": "implemented",
     "team#verifyDomainDnsRecord": "implemented",
     "team#listMessageEvents": "intentionally-excluded",
@@ -307,7 +307,7 @@
     "team#operation/listDomains/parameter/query/page[cursor]": "implemented",
     "team#operation/listDomains/parameter/query/page[size]": "implemented",
     "team#operation/listDomains/parameter/query/sort": "implemented",
-    "team#operation/getDomain/parameter/query/include": "intentionally-excluded",
+    "team#operation/getDomain/parameter/query/include": "implemented",
     "team#operation/listProjects/parameter/query/filter[search]": "implemented",
     "team#operation/listProjects/parameter/query/page[cursor]": "implemented",
     "team#operation/listProjects/parameter/query/page[size]": "implemented",
@@ -325,6 +325,9 @@
     "team#operation/listWebhooks/parameter/query/filter[scope]": "intentionally-excluded",
     "team#operation/listWebhooks/parameter/query/filter[search]": "implemented",
     "team#operation/listWebhooks/parameter/query/cursor": "implemented",
-    "team#operation/listWebhooks/parameter/query/sort": "implemented"
+    "team#operation/listWebhooks/parameter/query/sort": "implemented",
+    "team#/components/schemas/DomainData/properties/projects": "implemented",
+    "team#/components/schemas/DomainData/properties/projects/items/properties/id": "implemented",
+    "team#/components/schemas/UpdateDomainProjectsData/properties/project_ids": "implemented"
   }
 }

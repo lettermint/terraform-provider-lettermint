@@ -515,7 +515,7 @@
       "method": "PUT",
       "path": "/domains/{domainId}/projects",
       "operation_id": "updateDomainProjects",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#updateProject",
@@ -1937,12 +1937,12 @@
     {
       "key": "team#/components/schemas/DomainData/properties/projects",
       "source_pointer": "/components/schemas/DomainData/properties/projects",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#/components/schemas/DomainData/properties/projects/items/properties/id",
       "source_pointer": "/components/schemas/DomainData/properties/projects/items/properties/id",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#/components/schemas/DomainData/properties/projects/items/properties/name",
@@ -4077,7 +4077,7 @@
     {
       "key": "team#/components/schemas/UpdateDomainProjectsData/properties/project_ids",
       "source_pointer": "/components/schemas/UpdateDomainProjectsData/properties/project_ids",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#/components/schemas/UpdateProjectData/properties/default_route_id",
@@ -5342,7 +5342,7 @@
     {
       "key": "team#operation/getDomain/parameter/query/include",
       "source_pointer": "/paths/~1domains~1{domainId}/get/parameters/1",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#operation/getMessage/parameter/path/messageId",
@@ -5922,7 +5922,7 @@
     {
       "key": "team#operation/updateDomainProjects/parameter/path/domainId",
       "source_pointer": "/paths/~1domains~1{domainId}~1projects/put/parameters/0",
-      "status": "intentionally-excluded"
+      "status": "implemented"
     },
     {
       "key": "team#operation/updateProject/parameter/path/projectId",

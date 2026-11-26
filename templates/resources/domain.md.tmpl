@@ -13,6 +13,12 @@ Manage a Lettermint sending domain.
 
 {{ tffile "examples/resources/lettermint_domain/resource.tf" }}
 
+## Project Access
+
+By default, every project in the team can send from a domain. Set `project_ids` to allow only those projects. An empty set allows every project again.
+
+When you remove `project_ids` from the configuration, the provider stops managing the projects and does not change them in Lettermint.
+
 {{ .SchemaMarkdown | trimspace }}
 
 ## Import
@@ -20,3 +26,5 @@ Manage a Lettermint sending domain.
 {{ codefile "shell" "examples/resources/lettermint_domain/import.sh" }}
 
 An imported domain cannot recover `dns_records`. The provider does not request the optional DNS record relationship during a domain read.
+
+An imported domain does not manage `project_ids`. Add `project_ids` to the configuration and apply it to set the projects.
