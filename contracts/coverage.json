@@ -4,12 +4,12 @@
     {
       "id": "sending",
       "file": "sending-openapi.json",
-      "sha256": "53e80a6c21cd8995a02c75dfbef79773242cd0d60a5e6262eb79dc127f779c7f"
+      "sha256": "2146d02e550c3996c4fbbadae9cdb5171acab6c0df83e3c5d7f7255d94e2b6b6"
     },
     {
       "id": "team",
       "file": "team-openapi.json",
-      "sha256": "8b379814a0f501d2c564858bc382a29133535e704cc279545a934db611d587dd"
+      "sha256": "d62310dabbe5ee1a15944428459fd9792c632e772fbb37e3d61ad24b75d7ad83"
     }
   ],
   "operations": [
@@ -35,6 +35,20 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#activateDomainDkimUpgrade",
+      "method": "POST",
+      "path": "/domains/{domainId}/dkim/upgrade/activate",
+      "operation_id": "activateDomainDkimUpgrade",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#cancelDomainDkimUpgrade",
+      "method": "DELETE",
+      "path": "/domains/{domainId}/dkim/upgrade",
+      "operation_id": "cancelDomainDkimUpgrade",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#cancelScheduledMessage",
       "method": "POST",
       "path": "/messages/{messageId}/cancel",
@@ -56,6 +70,13 @@
       "status": "implemented"
     },
     {
+      "key": "team#createProjectApiToken",
+      "method": "POST",
+      "path": "/projects/{projectId}/api-tokens",
+      "operation_id": "createProjectApiToken",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#createRoute",
       "method": "POST",
       "path": "/projects/{projectId}/routes",
@@ -67,6 +88,27 @@
       "method": "POST",
       "path": "/suppressions",
       "operation_id": "createSuppressions",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#createTeamApiToken",
+      "method": "POST",
+      "path": "/team/api-tokens",
+      "operation_id": "createTeamApiToken",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#createTeamInvite",
+      "method": "POST",
+      "path": "/team/invites",
+      "operation_id": "createTeamInvite",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#createTeamRole",
+      "method": "POST",
+      "path": "/team/roles",
+      "operation_id": "createTeamRole",
       "status": "intentionally-excluded"
     },
     {
@@ -91,6 +133,20 @@
       "status": "implemented"
     },
     {
+      "key": "team#deleteProjectApiToken",
+      "method": "DELETE",
+      "path": "/projects/{projectId}/api-tokens/{tokenId}",
+      "operation_id": "deleteProjectApiToken",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#deleteProjectTrackingDomain",
+      "method": "DELETE",
+      "path": "/projects/{projectId}/tracking-domain",
+      "operation_id": "deleteProjectTrackingDomain",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#deleteReportForwarding",
       "method": "DELETE",
       "path": "/projects/{projectId}/report-forwarding",
@@ -112,11 +168,46 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#deleteTeamApiToken",
+      "method": "DELETE",
+      "path": "/team/api-tokens/{tokenId}",
+      "operation_id": "deleteTeamApiToken",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#deleteTeamInvite",
+      "method": "DELETE",
+      "path": "/team/invites/{inviteId}",
+      "operation_id": "deleteTeamInvite",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#deleteTeamMember",
+      "method": "DELETE",
+      "path": "/team/members/{userId}",
+      "operation_id": "deleteTeamMember",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#deleteTeamRole",
+      "method": "DELETE",
+      "path": "/team/roles/{roleId}",
+      "operation_id": "deleteTeamRole",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#deleteWebhook",
       "method": "DELETE",
       "path": "/webhooks/{webhookId}",
       "operation_id": "deleteWebhook",
       "status": "implemented"
+    },
+    {
+      "key": "team#duplicateTeamRole",
+      "method": "POST",
+      "path": "/team/roles/{roleId}/duplicate",
+      "operation_id": "duplicateTeamRole",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#getDomain",
@@ -161,6 +252,13 @@
       "status": "implemented"
     },
     {
+      "key": "team#getProjectTrackingDomain",
+      "method": "GET",
+      "path": "/projects/{projectId}/tracking-domain",
+      "operation_id": "getProjectTrackingDomain",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#getReportForwarding",
       "method": "GET",
       "path": "/projects/{projectId}/report-forwarding",
@@ -189,10 +287,24 @@
       "status": "implemented"
     },
     {
+      "key": "team#getTeamInvite",
+      "method": "GET",
+      "path": "/team/invites/{inviteId}",
+      "operation_id": "getTeamInvite",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#getTeamMember",
       "method": "GET",
       "path": "/team/members/{userId}",
       "operation_id": "getTeamMember",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#getTeamRole",
+      "method": "GET",
+      "path": "/team/roles/{roleId}",
+      "operation_id": "getTeamRole",
       "status": "intentionally-excluded"
     },
     {
@@ -245,6 +357,13 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#listProjectApiTokens",
+      "method": "GET",
+      "path": "/projects/{projectId}/api-tokens",
+      "operation_id": "listProjectApiTokens",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#listProjects",
       "method": "GET",
       "path": "/projects",
@@ -263,6 +382,20 @@
       "method": "GET",
       "path": "/suppressions",
       "operation_id": "listSuppressions",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#listTeamApiTokens",
+      "method": "GET",
+      "path": "/team/api-tokens",
+      "operation_id": "listTeamApiTokens",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#listTeamInvites",
+      "method": "GET",
+      "path": "/team/invites",
+      "operation_id": "listTeamInvites",
       "status": "intentionally-excluded"
     },
     {
@@ -329,6 +462,13 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#resendMessage",
+      "method": "POST",
+      "path": "/messages/{messageId}/resend",
+      "operation_id": "resendMessage",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#resendReportForwardingCode",
       "method": "POST",
       "path": "/projects/{projectId}/report-forwarding/resend-code",
@@ -336,10 +476,31 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#retryWebhookDelivery",
+      "method": "POST",
+      "path": "/webhooks/{webhookId}/deliveries/{deliveryId}/retry",
+      "operation_id": "retryWebhookDelivery",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#rotateDomainDkimKey",
+      "method": "POST",
+      "path": "/domains/{domainId}/dkim/rotate",
+      "operation_id": "rotateDomainDkimKey",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#rotateProjectToken",
       "method": "POST",
       "path": "/projects/{projectId}/rotate-token",
       "operation_id": "rotateProjectToken",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#startDomainDkimUpgrade",
+      "method": "POST",
+      "path": "/domains/{domainId}/dkim/upgrade",
+      "operation_id": "startDomainDkimUpgrade",
       "status": "intentionally-excluded"
     },
     {
@@ -364,6 +525,13 @@
       "status": "implemented"
     },
     {
+      "key": "team#updateProjectTrackingDomain",
+      "method": "PUT",
+      "path": "/projects/{projectId}/tracking-domain",
+      "operation_id": "updateProjectTrackingDomain",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#updateReportForwarding",
       "method": "PUT",
       "path": "/projects/{projectId}/report-forwarding",
@@ -385,10 +553,31 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#updateTeamApiToken",
+      "method": "PUT",
+      "path": "/team/api-tokens/{tokenId}",
+      "operation_id": "updateTeamApiToken",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#updateTeamInvite",
+      "method": "PUT",
+      "path": "/team/invites/{inviteId}",
+      "operation_id": "updateTeamInvite",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#updateTeamMemberAssignment",
       "method": "PUT",
       "path": "/team/members/{userId}/assignment",
       "operation_id": "updateTeamMemberAssignment",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#updateTeamRole",
+      "method": "PUT",
+      "path": "/team/roles/{roleId}",
+      "operation_id": "updateTeamRole",
       "status": "intentionally-excluded"
     },
     {
@@ -411,6 +600,13 @@
       "path": "/domains/{domainId}/dns-records/verify",
       "operation_id": "verifyDomainDnsRecords",
       "status": "implemented"
+    },
+    {
+      "key": "team#verifyProjectTrackingDomain",
+      "method": "POST",
+      "path": "/projects/{projectId}/tracking-domain/verify",
+      "operation_id": "verifyProjectTrackingDomain",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#verifyReportForwarding",
@@ -526,6 +722,111 @@
     {
       "key": "sending#/components/schemas/ScheduledSendMailResponse/properties/status",
       "source_pointer": "/components/schemas/ScheduledSendMailResponse/properties/status",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/attachments",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/attachments",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/bcc",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/bcc",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/cc",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/cc",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/from",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/from",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/headers",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/headers",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/html",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/html",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/idempotency_key",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/idempotency_key",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/metadata",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/metadata",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/reply_to",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/reply_to",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/route",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/route",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/sandbox_result",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/sandbox_result",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/scheduled_at",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/scheduled_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/settings",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/settings",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/settings/properties/tls",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/settings/properties/tls",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/settings/properties/track_clicks",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/settings/properties/track_clicks",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/settings/properties/track_opens",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/settings/properties/track_opens",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/subject",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/subject",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/tag",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/tag",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/tags",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/tags",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/text",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/text",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "sending#/components/schemas/SendBatchMailItem/properties/to",
+      "source_pointer": "/components/schemas/SendBatchMailItem/properties/to",
       "status": "intentionally-excluded"
     },
     {
@@ -681,6 +982,16 @@
     {
       "key": "team#/components/schemas/AnalyticsBreakdownRow/properties/dimensions",
       "source_pointer": "/components/schemas/AnalyticsBreakdownRow/properties/dimensions",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/AnalyticsBreakdownRow/properties/first_seen",
+      "source_pointer": "/components/schemas/AnalyticsBreakdownRow/properties/first_seen",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/AnalyticsBreakdownRow/properties/last_seen",
+      "source_pointer": "/components/schemas/AnalyticsBreakdownRow/properties/last_seen",
       "status": "intentionally-excluded"
     },
     {
@@ -1434,6 +1745,46 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/CreateTeamInviteData/properties/email",
+      "source_pointer": "/components/schemas/CreateTeamInviteData/properties/email",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamInviteData/properties/project_access",
+      "source_pointer": "/components/schemas/CreateTeamInviteData/properties/project_access",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamInviteData/properties/project_access/properties/project_ids",
+      "source_pointer": "/components/schemas/CreateTeamInviteData/properties/project_access/properties/project_ids",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamInviteData/properties/project_access/properties/scope",
+      "source_pointer": "/components/schemas/CreateTeamInviteData/properties/project_access/properties/scope",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamInviteData/properties/role_id",
+      "source_pointer": "/components/schemas/CreateTeamInviteData/properties/role_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamRoleData/properties/description",
+      "source_pointer": "/components/schemas/CreateTeamRoleData/properties/description",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamRoleData/properties/name",
+      "source_pointer": "/components/schemas/CreateTeamRoleData/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/CreateTeamRoleData/properties/permissions",
+      "source_pointer": "/components/schemas/CreateTeamRoleData/properties/permissions",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/DnsRecordVerificationFailureResponse/properties/message",
       "source_pointer": "/components/schemas/DnsRecordVerificationFailureResponse/properties/message",
       "status": "intentionally-excluded"
@@ -1564,6 +1915,11 @@
       "status": "implemented"
     },
     {
+      "key": "team#/components/schemas/DomainData/properties/dkim_transition",
+      "source_pointer": "/components/schemas/DomainData/properties/dkim_transition",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/DomainData/properties/dns_records",
       "source_pointer": "/components/schemas/DomainData/properties/dns_records",
       "status": "implemented"
@@ -1602,6 +1958,21 @@
       "key": "team#/components/schemas/DomainData/properties/status_changed_at",
       "source_pointer": "/components/schemas/DomainData/properties/status_changed_at",
       "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/DomainDkimTransition/properties/completes_after",
+      "source_pointer": "/components/schemas/DomainDkimTransition/properties/completes_after",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/DomainDkimTransition/properties/state",
+      "source_pointer": "/components/schemas/DomainDkimTransition/properties/state",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/DomainDkimTransition/properties/type",
+      "source_pointer": "/components/schemas/DomainDkimTransition/properties/type",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/DomainDnsRecordData/properties/content",
@@ -1696,6 +2067,16 @@
     {
       "key": "team#/components/schemas/DomainMutationResponse/properties/message",
       "source_pointer": "/components/schemas/DomainMutationResponse/properties/message",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/DuplicateTeamRoleData/properties/description",
+      "source_pointer": "/components/schemas/DuplicateTeamRoleData/properties/description",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/DuplicateTeamRoleData/properties/name",
+      "source_pointer": "/components/schemas/DuplicateTeamRoleData/properties/name",
       "status": "intentionally-excluded"
     },
     {
@@ -1796,6 +2177,16 @@
     {
       "key": "team#/components/schemas/MessageData/properties/reply_to",
       "source_pointer": "/components/schemas/MessageData/properties/reply_to",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/MessageData/properties/resent_from_message_id",
+      "source_pointer": "/components/schemas/MessageData/properties/resent_from_message_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/MessageData/properties/retained_until",
+      "source_pointer": "/components/schemas/MessageData/properties/retained_until",
       "status": "intentionally-excluded"
     },
     {
@@ -1949,6 +2340,11 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/MessageListData/properties/retained_until",
+      "source_pointer": "/components/schemas/MessageListData/properties/retained_until",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/MessageListData/properties/sandbox_result",
       "source_pointer": "/components/schemas/MessageListData/properties/sandbox_result",
       "status": "intentionally-excluded"
@@ -2049,6 +2445,26 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/PendingSendMailResponse/properties/message_id",
+      "source_pointer": "/components/schemas/PendingSendMailResponse/properties/message_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/PendingSendMailResponse/properties/sandbox",
+      "source_pointer": "/components/schemas/PendingSendMailResponse/properties/sandbox",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/PendingSendMailResponse/properties/sandbox_result",
+      "source_pointer": "/components/schemas/PendingSendMailResponse/properties/sandbox_result",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/PendingSendMailResponse/properties/status",
+      "source_pointer": "/components/schemas/PendingSendMailResponse/properties/status",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/ProcessInboundMessageResponse/properties/data",
       "source_pointer": "/components/schemas/ProcessInboundMessageResponse/properties/data",
       "status": "intentionally-excluded"
@@ -2066,6 +2482,106 @@
     {
       "key": "team#/components/schemas/ProcessInboundMessageResult/properties/webhook_target_count",
       "source_pointer": "/components/schemas/ProcessInboundMessageResult/properties/webhook_target_count",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/allowed_ips",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/allowed_ips",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/created_at",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/created_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/created_via",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/created_via",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/id",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/last_used_at",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/last_used_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/name",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/project_id",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/project_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiToken/properties/short_token",
+      "source_pointer": "/components/schemas/ProjectApiToken/properties/short_token",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenCreatedResponse/properties/data",
+      "source_pointer": "/components/schemas/ProjectApiTokenCreatedResponse/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenCreatedResponse/properties/message",
+      "source_pointer": "/components/schemas/ProjectApiTokenCreatedResponse/properties/message",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenCreatedResponse/properties/smtp",
+      "source_pointer": "/components/schemas/ProjectApiTokenCreatedResponse/properties/smtp",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/allowed_ips",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/allowed_ips",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/created_at",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/created_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/created_via",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/created_via",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/id",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/last_used_at",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/last_used_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/name",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/project_id",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/project_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/short_token",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/short_token",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectApiTokenSecret/properties/token",
+      "source_pointer": "/components/schemas/ProjectApiTokenSecret/properties/token",
       "status": "intentionally-excluded"
     },
     {
@@ -2159,6 +2675,11 @@
       "status": "implemented"
     },
     {
+      "key": "team#/components/schemas/ProjectData/properties/tracking_domain",
+      "source_pointer": "/components/schemas/ProjectData/properties/tracking_domain",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/ProjectData/properties/updated_at",
       "source_pointer": "/components/schemas/ProjectData/properties/updated_at",
       "status": "implemented"
@@ -2219,6 +2740,86 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/active",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/active",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/cname_target",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/cname_target",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/domain",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/domain",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/last_verification_at",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/last_verification_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/verified",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/verified",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomain/properties/verified_at",
+      "source_pointer": "/components/schemas/ProjectTrackingDomain/properties/verified_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainMutationResponse/properties/data",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainMutationResponse/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainMutationResponse/properties/message",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainMutationResponse/properties/message",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/domain",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/domain",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/expected_cname",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/expected_cname",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/found_cname",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/found_cname",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/temporary_error",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/temporary_error",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/verified",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/verified",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerification/properties/verified_at",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerification/properties/verified_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerificationResponse/properties/data",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerificationResponse/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ProjectTrackingDomainVerificationResponse/properties/message",
+      "source_pointer": "/components/schemas/ProjectTrackingDomainVerificationResponse/properties/message",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/ReportForwardingRequest/properties/destination",
       "source_pointer": "/components/schemas/ReportForwardingRequest/properties/destination",
       "status": "intentionally-excluded"
@@ -2241,6 +2842,21 @@
     {
       "key": "team#/components/schemas/RescheduleMessageRequest/properties/scheduled_at",
       "source_pointer": "/components/schemas/RescheduleMessageRequest/properties/scheduled_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/ResendMessageRequest/properties/recipients",
+      "source_pointer": "/components/schemas/ResendMessageRequest/properties/recipients",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/RetryWebhookDeliveryResponse/properties/delivery_id",
+      "source_pointer": "/components/schemas/RetryWebhookDeliveryResponse/properties/delivery_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/RetryWebhookDeliveryResponse/properties/message",
+      "source_pointer": "/components/schemas/RetryWebhookDeliveryResponse/properties/message",
       "status": "intentionally-excluded"
     },
     {
@@ -2544,6 +3160,21 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/SmtpCredentials/properties/host",
+      "source_pointer": "/components/schemas/SmtpCredentials/properties/host",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/SmtpCredentials/properties/ports",
+      "source_pointer": "/components/schemas/SmtpCredentials/properties/ports",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/SmtpCredentials/properties/username",
+      "source_pointer": "/components/schemas/SmtpCredentials/properties/username",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/SpamSymbol/properties/description",
       "source_pointer": "/components/schemas/SpamSymbol/properties/description",
       "status": "intentionally-excluded"
@@ -2764,6 +3395,16 @@
       "status": "implemented"
     },
     {
+      "key": "team#/components/schemas/StoreProjectApiTokenData/properties/name",
+      "source_pointer": "/components/schemas/StoreProjectApiTokenData/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/StoreProjectApiTokenData/properties/short_token",
+      "source_pointer": "/components/schemas/StoreProjectApiTokenData/properties/short_token",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/StoreProjectData/properties/delivery_mode",
       "source_pointer": "/components/schemas/StoreProjectData/properties/delivery_mode",
       "status": "intentionally-excluded"
@@ -2839,6 +3480,16 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/StoreSuppressionData/properties/domain",
+      "source_pointer": "/components/schemas/StoreSuppressionData/properties/domain",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/StoreSuppressionData/properties/domains",
+      "source_pointer": "/components/schemas/StoreSuppressionData/properties/domains",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/StoreSuppressionData/properties/email",
       "source_pointer": "/components/schemas/StoreSuppressionData/properties/email",
       "status": "intentionally-excluded"
@@ -2866,6 +3517,21 @@
     {
       "key": "team#/components/schemas/StoreSuppressionData/properties/scope",
       "source_pointer": "/components/schemas/StoreSuppressionData/properties/scope",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/StoreTeamApiTokenData/properties/abilities",
+      "source_pointer": "/components/schemas/StoreTeamApiTokenData/properties/abilities",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/StoreTeamApiTokenData/properties/expires_at",
+      "source_pointer": "/components/schemas/StoreTeamApiTokenData/properties/expires_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/StoreTeamApiTokenData/properties/name",
+      "source_pointer": "/components/schemas/StoreTeamApiTokenData/properties/name",
       "status": "intentionally-excluded"
     },
     {
@@ -3069,6 +3735,101 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/TeamApiToken/properties/abilities",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/abilities",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/allowed_ips",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/allowed_ips",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/created_at",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/created_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/created_via",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/created_via",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/expires_at",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/expires_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/id",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/last_used_at",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/last_used_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiToken/properties/name",
+      "source_pointer": "/components/schemas/TeamApiToken/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenCreatedResponse/properties/data",
+      "source_pointer": "/components/schemas/TeamApiTokenCreatedResponse/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenCreatedResponse/properties/message",
+      "source_pointer": "/components/schemas/TeamApiTokenCreatedResponse/properties/message",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/abilities",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/abilities",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/allowed_ips",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/allowed_ips",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/created_at",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/created_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/created_via",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/created_via",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/expires_at",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/expires_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/id",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/last_used_at",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/last_used_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/name",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamApiTokenSecret/properties/token",
+      "source_pointer": "/components/schemas/TeamApiTokenSecret/properties/token",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/TeamData/properties/addons",
       "source_pointer": "/components/schemas/TeamData/properties/addons",
       "status": "intentionally-excluded"
@@ -3132,6 +3893,41 @@
       "key": "team#/components/schemas/TeamData/properties/verified_at",
       "source_pointer": "/components/schemas/TeamData/properties/verified_at",
       "status": "implemented"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/created_at",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/created_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/email",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/email",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/id",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/project_access",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/project_access",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/role",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/role",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/role/properties/id",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/role/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamInviteData/properties/role/properties/name",
+      "source_pointer": "/components/schemas/TeamInviteData/properties/role/properties/name",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#/components/schemas/TeamMemberData/properties/email",
@@ -3206,6 +4002,11 @@
     {
       "key": "team#/components/schemas/TeamRoleData/properties/assignable",
       "source_pointer": "/components/schemas/TeamRoleData/properties/assignable",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/TeamRoleData/properties/description",
+      "source_pointer": "/components/schemas/TeamRoleData/properties/description",
       "status": "intentionally-excluded"
     },
     {
@@ -3304,6 +4105,11 @@
       "status": "implemented"
     },
     {
+      "key": "team#/components/schemas/UpdateProjectTrackingDomainData/properties/domain",
+      "source_pointer": "/components/schemas/UpdateProjectTrackingDomainData/properties/domain",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/UpdateRouteData/properties/attachment_delivery",
       "source_pointer": "/components/schemas/UpdateRouteData/properties/attachment_delivery",
       "status": "intentionally-excluded"
@@ -3389,8 +4195,43 @@
       "status": "implemented"
     },
     {
+      "key": "team#/components/schemas/UpdateTeamApiTokenData/properties/abilities",
+      "source_pointer": "/components/schemas/UpdateTeamApiTokenData/properties/abilities",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamApiTokenData/properties/name",
+      "source_pointer": "/components/schemas/UpdateTeamApiTokenData/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/UpdateTeamData/properties/name",
       "source_pointer": "/components/schemas/UpdateTeamData/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamInviteData/properties/email",
+      "source_pointer": "/components/schemas/UpdateTeamInviteData/properties/email",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamInviteData/properties/project_access",
+      "source_pointer": "/components/schemas/UpdateTeamInviteData/properties/project_access",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamInviteData/properties/project_access/properties/project_ids",
+      "source_pointer": "/components/schemas/UpdateTeamInviteData/properties/project_access/properties/project_ids",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamInviteData/properties/project_access/properties/scope",
+      "source_pointer": "/components/schemas/UpdateTeamInviteData/properties/project_access/properties/scope",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamInviteData/properties/role_id",
+      "source_pointer": "/components/schemas/UpdateTeamInviteData/properties/role_id",
       "status": "intentionally-excluded"
     },
     {
@@ -3411,6 +4252,21 @@
     {
       "key": "team#/components/schemas/UpdateTeamMemberAssignmentData/properties/role_id",
       "source_pointer": "/components/schemas/UpdateTeamMemberAssignmentData/properties/role_id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamRoleData/properties/description",
+      "source_pointer": "/components/schemas/UpdateTeamRoleData/properties/description",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamRoleData/properties/name",
+      "source_pointer": "/components/schemas/UpdateTeamRoleData/properties/name",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/UpdateTeamRoleData/properties/permissions",
+      "source_pointer": "/components/schemas/UpdateTeamRoleData/properties/permissions",
       "status": "intentionally-excluded"
     },
     {
@@ -3604,8 +4460,18 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/components/schemas/WebhookDeliveryData/properties/next_retry_at",
+      "source_pointer": "/components/schemas/WebhookDeliveryData/properties/next_retry_at",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/components/schemas/WebhookDeliveryData/properties/payload",
       "source_pointer": "/components/schemas/WebhookDeliveryData/properties/payload",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/WebhookDeliveryData/properties/payload_retained",
+      "source_pointer": "/components/schemas/WebhookDeliveryData/properties/payload_retained",
       "status": "intentionally-excluded"
     },
     {
@@ -3686,6 +4552,16 @@
     {
       "key": "team#/components/schemas/WebhookDeliveryListData/properties/id",
       "source_pointer": "/components/schemas/WebhookDeliveryListData/properties/id",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/WebhookDeliveryListData/properties/next_retry_at",
+      "source_pointer": "/components/schemas/WebhookDeliveryListData/properties/next_retry_at",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/components/schemas/WebhookDeliveryListData/properties/payload_retained",
+      "source_pointer": "/components/schemas/WebhookDeliveryListData/properties/payload_retained",
       "status": "intentionally-excluded"
     },
     {
@@ -4059,6 +4935,41 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/data",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/path",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/path",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/per_page",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/per_page",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#/paths/~1projects~1{projectId}~1report-forwarding/get/responses/200/content/application~1json/schema/properties/data",
       "source_pointer": "/paths/~1projects~1{projectId}~1report-forwarding/get/responses/200/content/application~1json/schema/properties/data",
       "status": "intentionally-excluded"
@@ -4146,6 +5057,76 @@
     {
       "key": "team#/paths/~1suppressions/get/responses/200/content/application~1json/schema/properties/prev_page_url",
       "source_pointer": "/paths/~1suppressions/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/data",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/path",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/path",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/per_page",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/per_page",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "source_pointer": "/paths/~1team~1api-tokens/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/data",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/data",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/next_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/next_page_url",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/path",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/path",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/per_page",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/per_page",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/prev_cursor",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/prev_page_url",
+      "source_pointer": "/paths/~1team~1invites/get/responses/200/content/application~1json/schema/properties/prev_page_url",
       "status": "intentionally-excluded"
     },
     {
@@ -4254,8 +5235,23 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/activateDomainDkimUpgrade/parameter/path/domainId",
+      "source_pointer": "/paths/~1domains~1{domainId}~1dkim~1upgrade~1activate/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/cancelDomainDkimUpgrade/parameter/path/domainId",
+      "source_pointer": "/paths/~1domains~1{domainId}~1dkim~1upgrade/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/cancelScheduledMessage/parameter/path/messageId",
       "source_pointer": "/paths/~1messages~1{messageId}~1cancel/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/createProjectApiToken/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/post/parameters/0",
       "status": "intentionally-excluded"
     },
     {
@@ -4274,6 +5270,21 @@
       "status": "implemented"
     },
     {
+      "key": "team#operation/deleteProjectApiToken/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens~1{tokenId}/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteProjectApiToken/parameter/path/tokenId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens~1{tokenId}/delete/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteProjectTrackingDomain/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1tracking-domain/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/deleteReportForwarding/parameter/path/projectId",
       "source_pointer": "/paths/~1projects~1{projectId}~1report-forwarding/delete/parameters/0",
       "status": "intentionally-excluded"
@@ -4289,9 +5300,39 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/deleteTeamApiToken/parameter/path/tokenId",
+      "source_pointer": "/paths/~1team~1api-tokens~1{tokenId}/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteTeamInvite/parameter/path/inviteId",
+      "source_pointer": "/paths/~1team~1invites~1{inviteId}/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteTeamMember/parameter/path/userId",
+      "source_pointer": "/paths/~1team~1members~1{userId}/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteTeamRole/parameter/path/roleId",
+      "source_pointer": "/paths/~1team~1roles~1{roleId}/delete/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/deleteTeamRole/parameter/query/replacement_role_id",
+      "source_pointer": "/paths/~1team~1roles~1{roleId}/delete/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/deleteWebhook/parameter/path/webhookId",
       "source_pointer": "/paths/~1webhooks~1{webhookId}/delete/parameters/0",
       "status": "implemented"
+    },
+    {
+      "key": "team#operation/duplicateTeamRole/parameter/path/roleId",
+      "source_pointer": "/paths/~1team~1roles~1{roleId}~1duplicate/post/parameters/0",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#operation/getDomain/parameter/path/domainId",
@@ -4331,6 +5372,11 @@
     {
       "key": "team#operation/getProject/parameter/query/include",
       "source_pointer": "/paths/~1projects~1{projectId}/get/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/getProjectTrackingDomain/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1tracking-domain/get/parameters/0",
       "status": "intentionally-excluded"
     },
     {
@@ -4379,8 +5425,18 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/getTeamInvite/parameter/path/inviteId",
+      "source_pointer": "/paths/~1team~1invites~1{inviteId}/get/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/getTeamMember/parameter/path/userId",
       "source_pointer": "/paths/~1team~1members~1{userId}/get/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/getTeamRole/parameter/path/roleId",
+      "source_pointer": "/paths/~1team~1roles~1{roleId}/get/parameters/0",
       "status": "intentionally-excluded"
     },
     {
@@ -4554,6 +5610,26 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/listProjectApiTokens/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listProjectApiTokens/parameter/query/page[cursor]",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/parameters/2",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listProjectApiTokens/parameter/query/page[size]",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listProjectApiTokens/parameter/query/sort",
+      "source_pointer": "/paths/~1projects~1{projectId}~1api-tokens/get/parameters/3",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/listProjects/parameter/query/filter[search]",
       "source_pointer": "/paths/~1projects/get/parameters/2",
       "status": "implemented"
@@ -4656,6 +5732,36 @@
     {
       "key": "team#operation/listSuppressions/parameter/query/sort",
       "source_pointer": "/paths/~1suppressions/get/parameters/2",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamApiTokens/parameter/query/page[cursor]",
+      "source_pointer": "/paths/~1team~1api-tokens/get/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamApiTokens/parameter/query/page[size]",
+      "source_pointer": "/paths/~1team~1api-tokens/get/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamApiTokens/parameter/query/sort",
+      "source_pointer": "/paths/~1team~1api-tokens/get/parameters/2",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamInvites/parameter/query/page[cursor]",
+      "source_pointer": "/paths/~1team~1invites/get/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamInvites/parameter/query/page[size]",
+      "source_pointer": "/paths/~1team~1invites/get/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/listTeamMembers/parameter/query/filter[project_id]",
+      "source_pointer": "/paths/~1team~1members/get/parameters/2",
       "status": "intentionally-excluded"
     },
     {
@@ -4769,13 +5875,43 @@
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/resendMessage/parameter/header/Idempotency-Key",
+      "source_pointer": "/paths/~1messages~1{messageId}~1resend/post/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/resendMessage/parameter/path/messageId",
+      "source_pointer": "/paths/~1messages~1{messageId}~1resend/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/resendReportForwardingCode/parameter/path/projectId",
       "source_pointer": "/paths/~1projects~1{projectId}~1report-forwarding~1resend-code/post/parameters/0",
       "status": "intentionally-excluded"
     },
     {
+      "key": "team#operation/retryWebhookDelivery/parameter/path/deliveryId",
+      "source_pointer": "/paths/~1webhooks~1{webhookId}~1deliveries~1{deliveryId}~1retry/post/parameters/1",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/retryWebhookDelivery/parameter/path/webhookId",
+      "source_pointer": "/paths/~1webhooks~1{webhookId}~1deliveries~1{deliveryId}~1retry/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/rotateDomainDkimKey/parameter/path/domainId",
+      "source_pointer": "/paths/~1domains~1{domainId}~1dkim~1rotate/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/rotateProjectToken/parameter/path/projectId",
       "source_pointer": "/paths/~1projects~1{projectId}~1rotate-token/post/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/startDomainDkimUpgrade/parameter/path/domainId",
+      "source_pointer": "/paths/~1domains~1{domainId}~1dkim~1upgrade/post/parameters/0",
       "status": "intentionally-excluded"
     },
     {
@@ -4794,6 +5930,11 @@
       "status": "implemented"
     },
     {
+      "key": "team#operation/updateProjectTrackingDomain/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1tracking-domain/put/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/updateReportForwarding/parameter/path/projectId",
       "source_pointer": "/paths/~1projects~1{projectId}~1report-forwarding/put/parameters/0",
       "status": "intentionally-excluded"
@@ -4804,8 +5945,23 @@
       "status": "implemented"
     },
     {
+      "key": "team#operation/updateTeamApiToken/parameter/path/tokenId",
+      "source_pointer": "/paths/~1team~1api-tokens~1{tokenId}/put/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/updateTeamInvite/parameter/path/inviteId",
+      "source_pointer": "/paths/~1team~1invites~1{inviteId}/put/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
       "key": "team#operation/updateTeamMemberAssignment/parameter/path/userId",
       "source_pointer": "/paths/~1team~1members~1{userId}~1assignment/put/parameters/0",
+      "status": "intentionally-excluded"
+    },
+    {
+      "key": "team#operation/updateTeamRole/parameter/path/roleId",
+      "source_pointer": "/paths/~1team~1roles~1{roleId}/put/parameters/0",
       "status": "intentionally-excluded"
     },
     {
@@ -4827,6 +5983,11 @@
       "key": "team#operation/verifyDomainDnsRecords/parameter/path/domainId",
       "source_pointer": "/paths/~1domains~1{domainId}~1dns-records~1verify/post/parameters/0",
       "status": "implemented"
+    },
+    {
+      "key": "team#operation/verifyProjectTrackingDomain/parameter/path/projectId",
+      "source_pointer": "/paths/~1projects~1{projectId}~1tracking-domain~1verify/post/parameters/0",
+      "status": "intentionally-excluded"
     },
     {
       "key": "team#operation/verifyReportForwarding/parameter/path/projectId",

@@ -5,12 +5,12 @@
     {
       "id": "sending",
       "file": "sending-openapi.json",
-      "sha256": "53e80a6c21cd8995a02c75dfbef79773242cd0d60a5e6262eb79dc127f779c7f"
+      "sha256": "2146d02e550c3996c4fbbadae9cdb5171acab6c0df83e3c5d7f7255d94e2b6b6"
     },
     {
       "id": "team",
       "file": "team-openapi.json",
-      "sha256": "8b379814a0f501d2c564858bc382a29133535e704cc279545a934db611d587dd"
+      "sha256": "d62310dabbe5ee1a15944428459fd9792c632e772fbb37e3d61ad24b75d7ad83"
     }
   ],
   "operation_statuses": {
@@ -72,7 +72,35 @@
     "team#getWebhookDelivery": "intentionally-excluded",
     "team#createWebhook": "implemented",
     "team#testWebhook": "intentionally-excluded",
-    "team#updateWebhook": "implemented"
+    "team#updateWebhook": "implemented",
+    "team#startDomainDkimUpgrade": "intentionally-excluded",
+    "team#cancelDomainDkimUpgrade": "intentionally-excluded",
+    "team#activateDomainDkimUpgrade": "intentionally-excluded",
+    "team#rotateDomainDkimKey": "intentionally-excluded",
+    "team#resendMessage": "intentionally-excluded",
+    "team#getProjectTrackingDomain": "intentionally-excluded",
+    "team#updateProjectTrackingDomain": "intentionally-excluded",
+    "team#deleteProjectTrackingDomain": "intentionally-excluded",
+    "team#verifyProjectTrackingDomain": "intentionally-excluded",
+    "team#listProjectApiTokens": "intentionally-excluded",
+    "team#createProjectApiToken": "intentionally-excluded",
+    "team#deleteProjectApiToken": "intentionally-excluded",
+    "team#createTeamRole": "intentionally-excluded",
+    "team#getTeamRole": "intentionally-excluded",
+    "team#updateTeamRole": "intentionally-excluded",
+    "team#deleteTeamRole": "intentionally-excluded",
+    "team#duplicateTeamRole": "intentionally-excluded",
+    "team#listTeamApiTokens": "intentionally-excluded",
+    "team#createTeamApiToken": "intentionally-excluded",
+    "team#updateTeamApiToken": "intentionally-excluded",
+    "team#deleteTeamApiToken": "intentionally-excluded",
+    "team#deleteTeamMember": "intentionally-excluded",
+    "team#listTeamInvites": "intentionally-excluded",
+    "team#createTeamInvite": "intentionally-excluded",
+    "team#getTeamInvite": "intentionally-excluded",
+    "team#updateTeamInvite": "intentionally-excluded",
+    "team#deleteTeamInvite": "intentionally-excluded",
+    "team#retryWebhookDelivery": "intentionally-excluded"
   },
   "field_status_overrides": {
     "team#/components/schemas/StoreWebhookData/properties/basic_auth": "implemented",

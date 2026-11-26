@@ -16,7 +16,7 @@ func TestAnalyticsAndForwardingHaveExplicitCoverage(t *testing.T) {
 	if err := json.Unmarshal(data, &coverage); err != nil {
 		t.Fatal(err)
 	}
-	if len(coverage.Operations) != 59 {
+	if len(coverage.Operations) != 87 {
 		t.Fatalf("got %d operations", len(coverage.Operations))
 	}
 	statuses := map[string]string{}
